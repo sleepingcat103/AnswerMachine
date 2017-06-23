@@ -267,10 +267,18 @@ function choice(input, str) {
 ////////////////////////////////////////
 
 function Help() {
-    return '【小工具】 by臭貓\
-		\n 使用說明:\
-		\n 待補..\
-		';
+    return '【貓咪喵喵】 by臭貓\
+\n 主要是娛樂用途 (&各種裱人功能OuOb)\
+\n \
+\n 使用說明:\
+\n 選擇功能: choice/隨機/選項/幫我選\
+\n 隨機選顏色 紅 黃 藍\
+\n 隨機排序: 排序\
+\n 吃東西排序 羊肉 牛肉 豬肉\
+\n 占卜功能: 運氣/運勢\
+\n 今日運勢\
+\n 死亡FLAG: 立Flag/死亡flag\
+';
 }
 
 function MeowHelp() {
