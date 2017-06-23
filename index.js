@@ -163,7 +163,7 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger == '!help') {
         return Help();
     }
-    else if (trigger.match(/排序/) != null && mainMsg.length >= 3) {
+    else if (trigger.match(/排序|排列/) != null && mainMsg.length >= 3) {
         return SortIt(inputStr, mainMsg);
     }   
         //生科火大圖指令開始於此
@@ -278,7 +278,7 @@ function SortIt(input, mainMsg) {
 
 function choice(input, str) {
     let a = input.replace(str[0], '').match(/\S+/ig);
-    return str[0] + '[' + a + '] → ' + a[Dice(a.length) - 1];
+    return str[0] + '[' + a + '] → ' + a[Math.floor((Math.random() * (a.length - 1)) + 1)];
 }
 
 ////////////////////////////////////////
