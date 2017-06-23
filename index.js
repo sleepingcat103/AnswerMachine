@@ -145,7 +145,7 @@ function parseInput(rplyToken, inputStr) {
 	
 	
 	//正常功能
-    else if (trigger.match(/運氣|運勢/) != null) {
+    else if (trigger.match(/運氣|運勢|运势|运气/) != null) {
         return randomLuck(mainMsg); //占卜運氣
     }
     else if (trigger.match(/立flag|死亡flag/) != null) {
