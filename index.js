@@ -278,7 +278,7 @@ function SortIt(input, mainMsg) {
 
 function choice(input, str) {
     let a = input.replace(str[0], '').match(/\S+/ig);
-    return str[0] + '[' + a + '] → ' + a[Math.floor((Math.random() * (a.length - 1)) + 1)];
+    return str[0] + '[' + a + '] → ' + a[Math.floor((Math.random() * (a.length - 1)))];
 }
 
 ////////////////////////////////////////
