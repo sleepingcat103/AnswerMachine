@@ -41,7 +41,7 @@ app.post('/', jsonParser, function (req, res) {
     console.log(msg);
     if (type == 'message' && msgType == 'text') {
         try {
-            rplyVal = parseInput(roomMID,rplyToken, msg);
+            rplyVal = parseInput(rplyToken, msg);
         }
         catch (e) {
             console.log('catch error');
@@ -123,7 +123,7 @@ function setOptions() {
 ////////////////////////////////////////
 //////////////// 分析開始 //////////////
 ////////////////////////////////////////
-function parseInput(roomMID,rplyToken, inputStr) {
+function parseInput(rplyToken, inputStr) {
 
     console.log('InputStr: ' + inputStr);
     _isNaN = function (obj) {
