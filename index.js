@@ -149,14 +149,14 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger.match(/貓/) != null) {
         return Cat();
     }
-    else if (trigger == 'help' || trigger == '幫助') {
+    else if (trigger == '!help') {
         return Help();
     }
     else if (trigger.match(/排序/) != null && mainMsg.length >= 3) {
         return SortIt(inputStr, mainMsg);
     }   
         //生科火大圖指令開始於此
-    else if (trigger == '生科') {
+    else if (trigger == '!生科') {
         outType = 'image';
         return 'https://i.imgur.com/jYxRe8wl.jpg';
     }
@@ -166,7 +166,7 @@ function parseInput(rplyToken, inputStr) {
     }
 	
 	//各種針對
-    else if (trigger.match(/二毛/) != null) {
+    else if (trigger == '!二毛') {
         return '使出挖地洞!!';
     }   
 	
