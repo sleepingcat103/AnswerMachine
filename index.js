@@ -135,6 +135,16 @@ function parseInput(rplyToken, inputStr) {
 	
     console.log('trigger: ' + trigger);
 
+    	//各種針對
+    else if (trigger == '!二毛') {
+        return twofur();
+    } 
+    else if (trigger == '!臭貓') {
+        return author();
+    } 
+	
+	
+	//正常功能
     if (trigger.match(/運氣|運勢/) != null) {
         return randomLuck(mainMsg); //占卜運氣
     }
@@ -166,10 +176,7 @@ function parseInput(rplyToken, inputStr) {
         return choice(inputStr, mainMsg);
     }
 	
-	//各種針對
-    else if (trigger == '!二毛') {
-        return twofur();
-    }   
+
 	
 }
 ////////////////////////////////////////
@@ -242,11 +249,17 @@ function randomLuck(TEXT) {
     return TEXT[0] + ' ： ' + rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
 
+////////////////////////////////////////
+//////////////// 恩...
+////////////////////////////////////////
 function twofur() {
     let rplyArr = ['使出挖地洞!!', '你們..傷了二毛的心'];
     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
-
+function author() {
+    let rplyArr = ['↑正直清新不鹹濕，女友募集中！'];
+    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+}
 ////////////////////////////////////////
 //////////////// Others
 ////////////////////////////////////////
