@@ -140,7 +140,8 @@ function parseInput(rplyToken, inputStr) {
     }
     else if (trigger.match(/立flag|死亡flag/) != null) {
         return BStyleFlagSCRIPTS();
-    }    else if (trigger == '貓咪') {
+    }    
+    else if (trigger == '!貓咪') {
         return MeowHelp();
     }
     else if (trigger.match(/喵/) != null) {
@@ -271,16 +272,16 @@ function Help() {
 \n 主要是娛樂用途 (&各種裱人功能OuOb)\
 \n \
 \n 使用說明:\
-\n ~選擇功能~\
+\n *選擇功能*\
 \n 	關鍵字: choice/隨機/選項/幫我選\
 \n 	例子: 隨機選顏色 紅 黃 藍\
-\n ~隨機排序~\
+\n *隨機排序*\
 \n 	關鍵字: 排序\
 \n 	例子: 吃東西排序 羊肉 牛肉 豬肉\
-\n ~占卜功能~\
+\n *占卜功能*\
 \n 	關鍵字: 運氣/運勢\
 \n 	例子: 今日運勢\
-\n ~死亡FLAG~\
+\n *死亡FLAG*\
 \n 	關鍵字: 立Flag/死亡flag\
 ';
 }
