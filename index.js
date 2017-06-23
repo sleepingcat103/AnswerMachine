@@ -166,7 +166,7 @@ function parseInput(rplyToken, inputStr) {
     }
 	
 	//各種針對
-    else if (trigger.match(/二毛/) != null && mainMsg.length >= 3) {
+    else if (trigger.match(/二毛/) != null) {
         return '使出挖地洞!!';
     }   
 	
