@@ -168,7 +168,7 @@ function parseInput(rplyToken, inputStr) {
 	
 	//各種針對
     else if (trigger == '!二毛') {
-        return '使出挖地洞!!';
+        return 2fur();
     }   
 	
 }
@@ -240,6 +240,11 @@ function BStyleFlagSCRIPTS() {
 function randomLuck(TEXT) {
     let rplyArr = ['超大吉', '大吉', '大吉', '中吉', '中吉', '中吉', '小吉', '小吉', '小吉', '小吉', '凶', '凶', '凶', '大凶', '大凶', '你還是，不要知道比較好', '這應該不關我的事'];
     return TEXT[0] + ' ： ' + rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+}
+
+function 2fur() {
+    let rplyArr = ['使出挖地洞!!', '你們..傷了二毛的心'];
+    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
 
 ////////////////////////////////////////
