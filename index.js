@@ -160,11 +160,16 @@ function parseInput(rplyToken, inputStr) {
         outType = 'image';
         return 'https://i.imgur.com/jYxRe8wl.jpg';
     }
-	
         //choice 指令開始於此
     else if (trigger.match(/choice|隨機|選項|幫我選/) != null && mainMsg.length >= 3) {
         return choice(inputStr, mainMsg);
     }
+	
+	//各種針對
+    else if (trigger.match(/二毛/) != null && mainMsg.length >= 3) {
+        return '使出挖地洞!!';
+    }   
+	
 }
 ////////////////////////////////////////
 //////////////// 占卜&其他
@@ -264,7 +269,7 @@ function choice(input, str) {
 function Help() {
     return '【小工具】 by臭貓\
 		\n 使用說明:\
-		\n \
+		\n 待補..\
 		';
 }
 
