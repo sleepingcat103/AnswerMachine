@@ -286,7 +286,7 @@ function Help() {
 }
 
 function MeowHelp() {
-    return Meow() + '\n要做什麼喵?\n\n(輸入 help 幫助 以獲得資訊)';
+    return Meow() + '\n要做什麼喵?\n\n(輸入 !help 以獲得資訊)';
 }
 
 function Meow() {
