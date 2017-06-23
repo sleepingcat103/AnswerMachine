@@ -136,7 +136,7 @@ function parseInput(rplyToken, inputStr) {
     console.log('trigger: ' + trigger);
 
     	//各種針對
-    else if (trigger == '!二毛') {
+    if (trigger == '!二毛') {
         return twofur();
     } 
     else if (trigger == '!臭貓') {
@@ -145,7 +145,7 @@ function parseInput(rplyToken, inputStr) {
 	
 	
 	//正常功能
-    if (trigger.match(/運氣|運勢/) != null) {
+    else if (trigger.match(/運氣|運勢/) != null) {
         return randomLuck(mainMsg); //占卜運氣
     }
     else if (trigger.match(/立flag|死亡flag/) != null) {
