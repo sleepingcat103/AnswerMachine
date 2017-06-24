@@ -139,6 +139,9 @@ function parseInput(rplyToken, inputStr) {
     if (trigger == '!二毛') {
         return twofur();
     } 
+    if (trigger == '!阿紫' || trigger == '!紫') {
+        return purple();
+    } 
     else if (trigger == '!臭貓') {
         return author();
     } 
@@ -254,6 +257,10 @@ function randomLuck(TEXT) {
 ////////////////////////////////////////
 function twofur() {
     let rplyArr = ['使出挖地洞!!', '你們..傷了二毛的心'];
+    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+}
+function purple() {
+    let rplyArr = ['--打滾中請稍後--', '打魔神!'];
     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
 function author() {
