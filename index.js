@@ -260,7 +260,7 @@ function twofur() {
     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
 function purple() {
-    let rplyArr = ['--打滾中請稍後--', '打魔神!'];
+    let rplyArr = ['--阿紫打滾中請稍後--', '打魔神!'];
     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
 function author() {
