@@ -145,6 +145,9 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger == '!臭貓') {
         return author();
     } 
+    else if (trigger == '!貓貓') {
+        return ccat();
+    } 
 	
 	
 	//正常功能
@@ -179,8 +182,27 @@ function parseInput(rplyToken, inputStr) {
         return choice(inputStr, mainMsg);
     }
 	
+}
 
-	
+
+////////////////////////////////////////
+//////////////// 恩...
+////////////////////////////////////////
+function twofur() {
+    let rplyArr = ['使出挖地洞!!', '你們..傷了二毛的心'];
+    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+}
+function purple() {
+    let rplyArr = ['--阿紫打滾中請稍後--', '打魔神!'];
+    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+}
+function author() {
+    let rplyArr = ['↑正直清新不鹹濕，女友募集中！','我要給你一個翻到後腦勺的、無比華麗的、空前絕後的特大號白眼'];
+    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+}
+function ccat() {
+    let rplyArr = ['這件...好像...也不錯......','走走走一起逛一中街~'];
+    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
 ////////////////////////////////////////
 //////////////// 占卜&其他
@@ -252,21 +274,7 @@ function randomLuck(TEXT) {
     return TEXT[0] + ' ： ' + rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
 
-////////////////////////////////////////
-//////////////// 恩...
-////////////////////////////////////////
-function twofur() {
-    let rplyArr = ['使出挖地洞!!', '你們..傷了二毛的心'];
-    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
-}
-function purple() {
-    let rplyArr = ['--阿紫打滾中請稍後--', '打魔神!'];
-    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
-}
-function author() {
-    let rplyArr = ['↑正直清新不鹹濕，女友募集中！'];
-    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
-}
+
 ////////////////////////////////////////
 //////////////// Others
 ////////////////////////////////////////
