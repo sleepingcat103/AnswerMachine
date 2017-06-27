@@ -148,6 +148,9 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger == '!貓貓') {
         return ccat();
     } 
+    else if (trigger == '!Miya') {
+        return funnyreturn('miya');
+    }
 	
 	
 	//正常功能
@@ -192,21 +195,25 @@ function funnyreturn(name) {
     let twofurArr = ['使出挖地洞!!', '你們..傷了二毛的心'];
     let purpleArr = ['--阿紫打滾中請稍後--', '打魔神!'];
     let authorArr = ['↑正直清新不鹹濕，女友募集中！','我要給你一個翻到後腦勺的、無比華麗的、空前絕後的特大號白眼'];
-    let ccatArr = ['這件...好像...也不錯......','走走走一起逛一中街~'];
+    let ccatArr = ['這件...好像...也不錯......','走走走逛一中街~'];
+    let miyaArr = ['妹妹你讀哪裡阿~','今年18歲 剛升大1 (閃亮)'];
 	
     var rplyArr;
 	
-    if (trigger == '!二毛') {
+    if (name == 'twofur') {
         rplyArr = twofurArr;
     } 
-    if (trigger == '!阿紫' || trigger == '!紫') {
+    if (name == 'purple') {
         rplyArr = purpleArr;
     } 
-    else if (trigger == '!臭貓') {
+    else if (name == 'author') {
         rplyArr = authorArr;
     } 
-    else if (trigger == '!貓貓') {
+    else if (name == 'ccat') {
         rplyArr = ccatArr;
+    } 
+    else if (name == 'miya') {
+        rplyArr = miyaArr;
     } 
 	
      return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
@@ -237,7 +244,7 @@ function BStyleFlagSCRIPTS() {
     let rplyArr = ['\
 「打完這仗我就回老家結婚」', '\
 「打完這一仗後我請你喝酒」', '\
-「你、你要錢嗎！要什麼我都能給你！/我可以給你更多的錢！」', '\
+「你、你要錢嗎！我可以給你更多的錢！」', '\
 「做完這次任務，我就要結婚了。」', '\
 「幹完這一票我就金盆洗手了。」', '\
 「好想再XXX啊……」', '\
@@ -263,7 +270,7 @@ function BStyleFlagSCRIPTS() {
 「對方只有一個人，大家一起上啊」', '\
 「我就不信，這麼多人還殺不了他一個！」', '\
 「幹，幹掉了嗎？」', '\
-「身體好輕」', '\
+「身體…好輕…」', '\
 「可惡！你給我看著！（逃跑）」', '\
 「躲在這裡就應該不會被發現了吧。」', '\
 「我不會讓任何人死的。」', '\
@@ -271,16 +278,15 @@ function BStyleFlagSCRIPTS() {
 「跑這麼遠應該就行了。」', '\
 「我已經甚麼都不怕了」', '\
 「這XXX是什麼，怎麼之前沒見過」', '\
-「什麼聲音……？就去看一下吧」', '\
+「什麼聲音……我就去確認一下……」', '\
 「是我的錯覺嗎？/果然是錯覺/錯覺吧/可能是我（看/聽）錯了」', '\
 「二十年後又是一條好漢！」', '\
 「大人/將軍武運昌隆」', '\
-「這次工作的報酬是以前無法比較的」', '\
+「這次報酬是以前都無法比較的」', '\
 「我才不要和罪犯呆在一起，我回自己的房間去了！」', '\
-「其實我知道事情的真相…（各種廢話）…犯人就是……」', '\
 「我已經天下無敵了~~」', '\
 「大人！這邊就交給小的吧，請快離開這邊吧」', '\
-「XX，這就是我們流派的最終奧義。這一招我只會演示一次，你看好了！」', '\
+「這就是我們流派的最終奧義。這一招我只會演示一次，你看好了！」', '\
 「誰敢殺我？」', '\
 「從來沒有人能越過我的劍圍。」', '\
 「就算殺死也沒問題吧？」', '\
