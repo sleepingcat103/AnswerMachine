@@ -164,7 +164,7 @@ function parseInput(rplyToken, inputStr) {
         return Meow();
     }
     else if (trigger.match(/貓/) != null) {
-        return Cat();
+        return Meow();
     }
     else if (trigger == '!help') {
         return Help();
@@ -188,6 +188,30 @@ function parseInput(rplyToken, inputStr) {
 ////////////////////////////////////////
 //////////////// 恩...
 ////////////////////////////////////////
+function funnyreturn(name) {
+    let twofurArr = ['使出挖地洞!!', '你們..傷了二毛的心'];
+    let purpleArr = ['--阿紫打滾中請稍後--', '打魔神!'];
+    let authorArr = ['↑正直清新不鹹濕，女友募集中！','我要給你一個翻到後腦勺的、無比華麗的、空前絕後的特大號白眼'];
+    let ccatArr = ['這件...好像...也不錯......','走走走一起逛一中街~'];
+	
+    var rplyArr;
+	
+    if (trigger == '!二毛') {
+        rplyArr = twofurArr;
+    } 
+    if (trigger == '!阿紫' || trigger == '!紫') {
+        rplyArr = purpleArr;
+    } 
+    else if (trigger == '!臭貓') {
+        rplyArr = authorArr;
+    } 
+    else if (trigger == '!貓貓') {
+        rplyArr = ccatArr;
+    } 
+	
+     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+}
+
 function twofur() {
     let rplyArr = ['使出挖地洞!!', '你們..傷了二毛的心'];
     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
@@ -324,14 +348,6 @@ function MeowHelp() {
 }
 
 function Meow() {
-    let rplyArr = ['喵喵?', '喵喵喵', '喵?', '喵~', '喵喵喵喵!', '喵<3', '喵喵.....', '喵嗚~', '喵喵! 喵喵喵!', '喵喵', '喵', '\
-喵喵?', '喵喵喵', '喵?', '喵~', '喵喵喵喵!', '喵<3', '喵喵.....', '喵嗚~', '喵喵! 喵喵喵!', '喵喵', '喵', '\
-喵喵?', '喵喵喵', '喵?', '喵~', '喵喵喵喵!', '喵<3', '喵喵.....', '喵嗚~', '喵喵! 喵喵喵!', '喵喵', '喵', '\
-喵喵!', '喵喵....喵?', '喵!!!', '喵~喵~'];
-    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
-}
-
-function Cat() {
     let rplyArr = ['喵喵?', '喵喵喵', '喵?', '喵~', '喵喵喵喵!', '喵<3', '喵喵.....', '喵嗚~', '喵喵! 喵喵喵!', '喵喵', '喵', '\
 喵喵?', '喵喵喵', '喵?', '喵~', '喵喵喵喵!', '喵<3', '喵喵.....', '喵嗚~', '喵喵! 喵喵喵!', '喵喵', '喵', '\
 喵喵?', '喵喵喵', '喵?', '喵~', '喵喵喵喵!', '喵<3', '喵喵.....', '喵嗚~', '喵喵! 喵喵喵!', '喵喵', '喵', '\
