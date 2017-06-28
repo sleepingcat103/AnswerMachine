@@ -335,6 +335,8 @@ function Help() {
 \n 主要是娛樂用途 (&各種裱人功能OuOb)\
 \n \
 \n 使用說明:\
+\n *友善回應(OuOb)*\
+\n	關鍵字: !貓貓/!臭貓/!阿紫/!紫/!二毛/!Miya\
 \n *選擇功能*\
 \n 	關鍵字: choice/隨機/選項/幫我選\
 \n 	例子: 隨機選顏色 紅 黃 藍\
@@ -350,7 +352,7 @@ function Help() {
 }
 
 function MeowHelp() {
-    return Meow() + '\n要做什麼喵?\n\n(輸入 !help 以獲得資訊)';
+    return Meow() + '\n要做什麼喵?\n\n(輸入 !help 以獲得使用說明)';
 }
 
 function Meow() {
