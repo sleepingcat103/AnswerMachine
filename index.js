@@ -192,10 +192,10 @@ function parseInput(rplyToken, inputStr) {
 //////////////// 恩...
 ////////////////////////////////////////
 function funnyreturn(name) {
-    let twofurArr = ['使出挖地洞!!', '你們..傷了二毛的心'];
+    let twofurArr = ['使出挖地洞!!', '你們..傷了二毛的心','今天要穿哪件襯衫呢...','JK! JK! JKJKJK#$@%..(興奮到翻白眼)'];
     let purpleArr = ['--阿紫打滾中請稍後--', '打魔神!'];
     let authorArr = ['↑正直清新不鹹濕，女友募集中！','我要給你一個翻到後腦勺的、無比華麗的、空前絕後的特大號白眼'];
-    let ccatArr = ['這件...好像...也不錯......','走走走逛一中街~'];
+    let ccatArr = ['這件...好像...也不錯......','走走走逛一中街~','今天也放假OuOb'];
     let miyaArr = ['妹妹你讀哪裡阿~','今年18歲 剛升大1 (閃亮)'];
 	
     var rplyArr;
