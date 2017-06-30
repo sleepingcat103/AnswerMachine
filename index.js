@@ -137,16 +137,16 @@ function parseInput(rplyToken, inputStr) {
 
     	//各種針對
     if (trigger == '!二毛') {
-        return twofur();
+        return funnyreturn('twofur');
     } 
     if (trigger == '!阿紫' || trigger == '!紫') {
-        return purple();
+        return funnyreturn('purple');
     } 
     else if (trigger == '!臭貓') {
-        return author();
+        return funnyreturn('author');
     } 
     else if (trigger == '!貓貓') {
-        return ccat();
+        return funnyreturn('ccat');
     } 
     else if (trigger == '!Miya') {
         return funnyreturn('miya');
