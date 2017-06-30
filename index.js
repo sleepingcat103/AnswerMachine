@@ -193,10 +193,10 @@ function parseInput(rplyToken, inputStr) {
 ////////////////////////////////////////
 function funnyreturn(name) {
     let twofurArr = ['使出挖地洞!!', '你們..傷了二毛的心','今天要穿哪件襯衫呢...','JK! JK! JKJKJK#$@%..(興奮到翻白眼)'];
-    let purpleArr = ['--阿紫打滾中請稍後--', '打魔神!'];
+    let purpleArr = ['--阿紫打滾中請稍後--', '打魔神!','0 3 0'];
     let authorArr = ['↑正直清新不鹹濕，女友募集中！','我要給你一個翻到後腦勺的、無比華麗的、空前絕後的特大號白眼'];
     let ccatArr = ['這件...好像...也不錯......','走走走逛一中街~','今天也放假OuOb'];
-    let miyaArr = ['妹妹你讀哪裡阿~','今年18歲 剛升大1 (閃亮)'];
+    let miyaArr = ['妹妹你讀哪裡阿~','今年18歲 剛升大1 (閃亮)','還不請安'];
 	
     var rplyArr;
 	
@@ -224,7 +224,7 @@ function twofur() {
     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
 function purple() {
-    let rplyArr = ['--阿紫打滾中請稍後--', '打魔神!'];
+    let rplyArr = ['--阿紫打滾中請稍後--', '打魔神!','0 3 0','今天要穿哪件襯衫呢...','JK! JK! JKJKJK#$@%..(興奮到翻白眼)'];
     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
 function author() {
@@ -232,7 +232,7 @@ function author() {
     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
 function ccat() {
-    let rplyArr = ['這件...好像...也不錯......','走走走一起逛一中街~'];
+    let rplyArr = ['這件...好像...也不錯......','走走走一起逛一中街~','今天也放假OuOb'];
     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
 ////////////////////////////////////////
@@ -291,9 +291,10 @@ function BStyleFlagSCRIPTS() {
 「從來沒有人能越過我的劍圍。」', '\
 「就算殺死也沒問題吧？」', '\
 「看我塔下強殺！」', '\
+「這裡交給我吧」', '\
+「事情不可能再更糟了」', '\
 「騙人的吧，我們不是朋友嗎？」', '\
-「我老爸是....你有種就....」', '\
-「我可以好好利用這件事」'];
+「我老爸是....你有種就....」'];
 
     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
