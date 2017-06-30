@@ -203,7 +203,7 @@ function funnyreturn(name) {
     if (name == 'twofur') {
         rplyArr = twofurArr;
     } 
-    if (name == 'purple') {
+    else if (name == 'purple') {
         rplyArr = purpleArr;
     } 
     else if (name == 'author') {
@@ -218,7 +218,7 @@ function funnyreturn(name) {
 	
      return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
-
+/*
 function twofur() {
     let rplyArr = ['使出挖地洞!!', '你們..傷了二毛的心'];
     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
@@ -235,6 +235,7 @@ function ccat() {
     let rplyArr = ['這件...好像...也不錯......','走走走一起逛一中街~','今天也放假OuOb'];
     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
+*/
 ////////////////////////////////////////
 //////////////// 占卜&其他
 ////////////////////////////////////////
