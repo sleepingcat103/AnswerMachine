@@ -148,7 +148,7 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger == '!貓貓') {
         return funnyreturn('ccat');
     } 
-    else if (trigger == '!Miya') {
+    else if (trigger == '!miya') {
         return funnyreturn('miya');
     }
 	
