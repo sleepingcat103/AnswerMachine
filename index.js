@@ -192,8 +192,8 @@ function parseInput(rplyToken, inputStr) {
 //////////////// 恩...
 ////////////////////////////////////////
 function funnyreturn(name) {
-    let twofurArr = ['使出挖地洞!!', '你們..傷了二毛的心','今天要穿哪件襯衫呢...','JK! JK! JKJKJK#$@%..(興奮到翻白眼)'];
-    let purpleArr = ['--阿紫打滾中請稍後--', '打魔神!','0 3 0'];
+    let twofurArr = ['使出挖地洞!!', '你們..傷了二毛的心','今天要穿哪件襯衫呢...','JK! JK! JKJKJK#$@%..(興奮到翻白眼)','JK! 不是，我是說，早安'];
+    let purpleArr = ['--阿紫打滾中請稍後--', '打魔神!','0 3 0','=皿='];
     let authorArr = ['↑正直清新不鹹濕，女友募集中！','我要給你一個翻到後腦勺的、無比華麗的、空前絕後的特大號白眼'];
     let ccatArr = ['這件...好像...也不錯......','走走走逛一中街~','今天也放假OuOb'];
     let miyaArr = ['妹妹你讀哪裡阿~','今年18歲 剛升大1 (閃亮)','還不請安'];
@@ -218,24 +218,7 @@ function funnyreturn(name) {
 	
      return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
-/*
-function twofur() {
-    let rplyArr = ['使出挖地洞!!', '你們..傷了二毛的心'];
-    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
-}
-function purple() {
-    let rplyArr = ['--阿紫打滾中請稍後--', '打魔神!','0 3 0','今天要穿哪件襯衫呢...','JK! JK! JKJKJK#$@%..(興奮到翻白眼)'];
-    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
-}
-function author() {
-    let rplyArr = ['↑正直清新不鹹濕，女友募集中！','我要給你一個翻到後腦勺的、無比華麗的、空前絕後的特大號白眼'];
-    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
-}
-function ccat() {
-    let rplyArr = ['這件...好像...也不錯......','走走走一起逛一中街~','今天也放假OuOb'];
-    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
-}
-*/
+
 ////////////////////////////////////////
 //////////////// 占卜&其他
 ////////////////////////////////////////
