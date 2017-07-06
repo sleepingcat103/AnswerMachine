@@ -153,7 +153,7 @@ function parseInput(rplyToken, inputStr) {
         return funnyreturn('miya');
     }
 	//喵喵叫開關
-    else if (trigger == '貓咪安靜' || trigger == '貓咪閉嘴' || trigger == '貓咪不要吵' || trigger == '貓咪不要叫' || '猫咪安静'|| trigger =='猫咪闭嘴'|| trigger =='猫咪不要吵'|| trigger =='猫咪不要叫) {
+    else if (trigger == '貓咪安靜' || trigger == '貓咪閉嘴' || trigger == '貓咪不要吵' || trigger == '貓咪不要叫' || '猫咪安静'|| trigger =='猫咪闭嘴'|| trigger =='猫咪不要吵'|| trigger == '猫咪不要叫') {
    	meowSwitch = 'off';
 	return '......';
     }
