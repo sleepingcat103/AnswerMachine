@@ -143,21 +143,21 @@ function parseInput(rplyToken, inputStr) {
     if (trigger == '!阿紫' || trigger == '!紫') {
         return funnyreturn('purple');
     } 
-    else if (trigger == '!臭貓') {
+    else if (trigger == '!臭貓' || trigger == '!臭猫') {
         return funnyreturn('author');
     } 
-    else if (trigger == '!貓貓') {
+    else if (trigger == '!貓貓' || trigger == '猫猫') {
         return funnyreturn('ccat');
     } 
     else if (trigger == '!miya') {
         return funnyreturn('miya');
     }
 	//喵喵叫開關
-    else if (trigger == '!貓咪安靜' || trigger == '!貓咪閉嘴' || trigger == '!貓咪不要吵' || trigger == '!貓咪不要叫') {
+    else if (trigger == '貓咪安靜' || trigger == '貓咪閉嘴' || trigger == '貓咪不要吵' || trigger == '貓咪不要叫' || '猫咪安静'|| trigger =='猫咪闭嘴'|| trigger =='猫咪不要吵'|| trigger =='猫咪不要叫) {
    	meowSwitch = 'off';
 	return '......';
     }
-    else if (trigger == '貓咪在哪裡'){
+    else if (trigger == '貓咪在哪裡' || trigger == '猫咪在哪里'){
 	meowSwitch = 'on';
 	return Meow();
     }
