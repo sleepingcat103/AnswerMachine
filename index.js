@@ -8,6 +8,7 @@ var jsonParser = bodyParser.json();
 var outType = 'text';
 var event = '';
 var v_path = '/v2/bot/message/reply';
+var meowSwitch = 'on';
 
 
 var options = {
@@ -151,7 +152,15 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger == '!miya') {
         return funnyreturn('miya');
     }
-	
+	//喵喵叫開關
+    else if (trigger == '!貓咪安靜' || trigger == '!貓咪閉嘴' || trigger == '!貓咪不要吵' || trigger == '!貓咪不要叫') {
+   	meowSwitch = 'off';
+	return '......';
+    }
+    else if (trigger == '貓咪在哪裡'){
+	meowSwitch = 'on';
+	return Meow();
+    }
 	
 	//正常功能
     else if (trigger.match(/運氣|運勢|运势|运气/) != null) {
@@ -342,5 +351,7 @@ function MeowHelp() {
 
 function Meow() {
     let rplyArr = ['喵喵?', '喵喵喵', '喵?', '喵~', '喵喵喵喵!', '喵<3', '喵喵.....', '喵嗚~', '喵喵! 喵喵喵!', '喵喵', '喵', '喵喵!', '喵喵....喵?', '喵!!!', '喵~喵~'];
-    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+    if(meowSwitch == 'on'){
+	return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+    }
 };
