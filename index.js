@@ -152,6 +152,10 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger == '!miya') {
         return funnyreturn('miya');
     }
+    else if (trigger == '!拖拉') {
+        return funnyreturn('slow');
+    }
+
 	//喵喵叫開關
     else if (trigger == '貓咪安靜' || trigger == '貓咪閉嘴' || trigger == '貓咪不要吵' || trigger == '貓咪不要叫' || trigger == '猫咪安静'|| trigger == '猫咪闭嘴'|| trigger == '猫咪不要吵'|| trigger == '猫咪不要叫') {
    	meowSwitch = 'off';
@@ -201,11 +205,12 @@ function parseInput(rplyToken, inputStr) {
 //////////////// 恩...
 ////////////////////////////////////////
 function funnyreturn(name) {
-    let twofurArr = ['使出挖地洞!!', '你們..傷了二毛的心','今天要穿哪件襯衫呢...','J......S? 也可以阿!!','JK! 不是，我是說，大家好'];
-    let purpleArr = ['--阿紫打滾中請稍後--', '打魔神!','0 3 0','=皿='];
+    let twofurArr = ['使出挖地洞!!','你們..傷了二毛的心','今天要穿哪件襯衫呢...','(看著黑絲套裝OL流口水中)','JK! 不是，我是說，大家好','完全不夠..再來R'];
+    let purpleArr = ['--阿紫打滾中請稍後--','打魔神!','0 3 0','=皿='];
     let authorArr = ['↑正直清新不鹹濕，女友募集中！','我要給你一個翻到後腦勺的、無比華麗的、空前絕後的特大號白眼'];
     let ccatArr = ['這件...好像...也不錯......','走走走逛一中街~','今天也放假OuOb'];
-    let miyaArr = ['妹妹你讀哪裡阿~','今年18歲 剛升大1 (閃亮)','還不請安'];
+    let miyaArr = ['妹妹你讀哪裡阿~','今年剛升大1 (閃亮)','還不請安'];
+    let slowArr = ['二毛我抽到這隻怎麼樣...恩?你怎不說話?','加班中勿擾 -_-','前往加班的路上QAQ','貓貓是對的','恩阿那個今天不太舒服不適合逛街阿唉呀真沒辦法(棒讀)'];
 	
     var rplyArr;
 	
@@ -223,7 +228,10 @@ function funnyreturn(name) {
     } 
     else if (name == 'miya') {
         rplyArr = miyaArr;
-    } 
+    }
+    else if (name == 'slow') {
+        rplyArr = slowArr;
+    }
 	
      return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
