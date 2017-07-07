@@ -8,7 +8,7 @@ var jsonParser = bodyParser.json();
 var outType = 'text';
 var event = '';
 var v_path = '/v2/bot/message/reply';
-var meowSwitch = 'on';
+var meowSwitch = 'off';
 
 
 var options = {
@@ -205,7 +205,8 @@ function parseInput(rplyToken, inputStr) {
 //////////////// 恩...
 ////////////////////////////////////////
 function funnyreturn(name) {
-    let twofurArr = ['使出挖地洞!!','你們..傷了二毛的心','今天要穿哪件襯衫呢...','(看著黑絲套裝OL流口水中)','JK! 不是，我是說，大家好','完全不夠..再來R'];
+    let twofurArr = ['使出挖地洞!!','你們..傷了二毛的心','今天要穿哪件襯衫呢...','(看著黑絲套裝OL流口水中)','\
+JK! 不是，我是說，大家好','完全不夠..再來R','我..我才沒有覺得一直被機器人玩很開心呢! 哼! (臉紅)'];
     let purpleArr = ['--阿紫打滾中請稍後--','打魔神!','0 3 0','=皿='];
     let authorArr = ['↑正直清新不鹹濕，女友募集中！','我要給你一個翻到後腦勺的、無比華麗的、空前絕後的特大號白眼'];
     let ccatArr = ['這件...好像...也不錯......','走走走逛一中街~','今天也放假OuOb'];
