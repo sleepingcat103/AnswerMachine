@@ -179,12 +179,6 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger == '!貓咪') {
         return MeowHelp();
     }
-    else if (trigger.match(/喵/) != null) {
-        return Meow();
-    }
-    else if (trigger.match(/貓/) != null) {
-        return Meow();
-    }
     else if (trigger == '!help') {
         return Help();
     }
@@ -200,7 +194,12 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger.match(/choice|隨機|選項|幫我選|随机|选项|帮我选/) != null && mainMsg.length >= 3) {
         return choice(inputStr, mainMsg);
     }
-	
+    else if (trigger.match(/喵/) != null) {
+        return Meow();
+    }
+    else if (trigger.match(/貓/) != null) {
+        return Meow();
+    }
 }
 
 
