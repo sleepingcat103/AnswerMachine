@@ -135,7 +135,15 @@ function parseInput(rplyToken, inputStr) {
     let trigger = mainMsg[0].toString().toLowerCase(); //指定啟動詞在第一個詞&把大階強制轉成細階
 	
     console.log('trigger: ' + trigger);
-
+	
+    if (trigger == '!二毛88' || trigger == '!蘿莉控' || trigger == '!三年起步' || trigger == '!3年'  || trigger == '!三年') {
+        let rplyArr = ['\
+https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-1.jpg','\
+https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-2.jpg','\
+https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
+	outType = 'image';
+	return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+    }
     	//各種針對
     if (trigger == '!二毛') {
         return funnyreturn('twofur');
