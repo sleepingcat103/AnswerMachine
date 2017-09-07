@@ -136,7 +136,7 @@ function parseInput(rplyToken, inputStr) {
 	
     console.log('trigger: ' + trigger);
 	
-    if (trigger == '!二毛88' || trigger == '!蘿莉控' || trigger == '!三年起步' || trigger == '!3年'  || trigger == '!三年') {
+    if (trigger == '!二毛88' || trigger == '!蘿莉控' || trigger == '!3年'  || trigger == '!三年') {
         let rplyArr = ['\
 https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-1.jpg','\
 https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-2.jpg','\
@@ -164,7 +164,13 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
         return funnyreturn('slow');
     }
     else if (trigger == '!白毛') {
-	return funnyreturn('whitefur')
+	return funnyreturn('whitefur');
+    }
+    else if (trigger == '!璃璃' || trigger == '!莉莉') {
+	return funnyreturn('lili');	
+    }
+    else if (trigger == '!蛋糕') {
+	return funnyreturn('cake');	
     }
 
 	//喵喵叫開關
@@ -223,6 +229,8 @@ function funnyreturn(name) {
     let miyaArr = ['妹妹你讀哪裡阿~','今年剛升大1 (閃亮)','還不請安'];
     let slowArr = ['二毛我抽到這隻怎麼樣...恩?你怎不說話?','加班中勿擾 -_-','前往加班的路上QAQ','貓貓是對的','恩阿那個今天不太舒服不適合逛街阿唉呀真沒辦法(棒讀)'];
     let whitefurArr = ['使出異次元攻擊！扭轉故事！','可以開始十八禁話題了嗎','(小劇場運作中)','阿阿來了!!又有靈感了!','希望..我以外的人都能幸福..(悲壯)'];
+    let liliArr = ['看我的金雞獨莉!', '一條腿也很帥(發亮)','喔是喔','。','???(黑人問號臉)'];
+    let cakeArr = ['\超帥/','今天有個女生跟我要電話 @ @','吃垮他!!╰（‵□′╰','死都不曝照030','白毛你這樣不行'];
 	
     var rplyArr;
 	
@@ -246,6 +254,12 @@ function funnyreturn(name) {
     }
     else if (name == 'whitefur') {
 	rplyArr = whitefurArr;    
+    }
+    else if (name == 'lili') {
+    	rplyArr = liliArr;
+    }
+    else if (name == 'cake') {
+    	rplyArr = cakeArr;
     }
 	
      return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
