@@ -10,7 +10,7 @@ var event = '';
 var v_path = '/v2/bot/message/reply';
 var meowSwitch = 'off';
 
-if (calcTime(8).match(/10-3/) != null){
+if (calcTime(8).match(/10-4/) != null){
     console.log('qq');
 }
 
