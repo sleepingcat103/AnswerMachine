@@ -9,7 +9,7 @@ var outType = 'text';
 var event = '';
 var v_path = '/v2/bot/message/reply';
 var meowSwitch = 'off';
-var GroupId = '';
+var GroupId = 'C93f521336a66a896e7a95aad5d218057';
 
 var options = {
     host: 'api.line.me',
