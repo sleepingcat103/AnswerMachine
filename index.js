@@ -234,9 +234,8 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
 ////////////////////////////////////////
 //////////////// 分析開始 //////////////
 ////////////////////////////////////////
-if (calcTime(8).match(/10-3/) != null){
-    replyMsgToLine('push', GroupId, '喵');
-    console.log('qq');
+if (calcTime(8) == '10-3'){
+    replyMsgToLine('push', GroupId, '臭貓生日 祝臭貓生日快樂喵ΦωΦ/');
 }
 
 ////////////////////////////////////////
