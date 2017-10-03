@@ -78,6 +78,17 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
               }
             ]
         }
+    } else if (outType == 'push') {
+        v_path = '/v2/bot/message/push';
+        rplyObj = {
+            to: rplyToken,
+            messages: [
+              {
+                  type: "text",
+                  text: rplyVal
+              }
+            ]
+        }
     } else {
         v_path = '/v2/bot/message/reply';
         rplyObj = {
