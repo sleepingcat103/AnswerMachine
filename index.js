@@ -9,9 +9,8 @@ var outType = 'text';
 var event = '';
 var v_path = '/v2/bot/message/reply';
 var meowSwitch = 'off';
-var date = new Date();
 
-console.log(date);
+console.log(calcTime(8));
 
 
 var options = {
@@ -342,6 +341,21 @@ function randomLuck(TEXT) {
 ////////////////////////////////////////
 //////////////// Others
 ////////////////////////////////////////
+
+function calcTime(offset) {
+
+    // 建立現在時間的物件
+    d = new Date();
+
+    // 取得 UTC time
+    utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+
+    // 新增不同時區的日期資料
+    nd = new Date(utc + (3600000*offset));
+
+    // 顯示當地時間
+    return nd.toLocaleString();
+}
 
 function SortIt(input, mainMsg) {
 
