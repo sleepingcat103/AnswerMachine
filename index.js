@@ -9,12 +9,7 @@ var outType = 'text';
 var event = '';
 var v_path = '/v2/bot/message/reply';
 var meowSwitch = 'off';
-
-if (calcTime(8).match(/10-4/) != null){
-    console.log('qq');
-}
-
-
+var GroupId = '';
 
 var options = {
     host: 'api.line.me',
@@ -219,8 +214,19 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
     else if (trigger.match(/貓/) != null) {
         return Meow();
     }
+    else if (trigger == 'gid'){
+	    
+	console.log(event.source.groupId);    
+    }
 }
 
+////////////////////////////////////////
+//////////////// 分析開始 //////////////
+////////////////////////////////////////
+if (calcTime(8).match(/10-3/) != null){
+    replyMsgToLine('push', GroupId, '喵');
+    console.log('qq');
+}
 
 ////////////////////////////////////////
 //////////////// 恩...
