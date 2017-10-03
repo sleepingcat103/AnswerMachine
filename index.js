@@ -10,7 +10,7 @@ var event = '';
 var v_path = '/v2/bot/message/reply';
 var meowSwitch = 'off';
 
-if (calcTime(8).match(/10//3/) != null){
+if (calcTime(8).match(/10-3/) != null){
     console.log('qq');
 }
 
@@ -357,7 +357,7 @@ function calcTime(offset) {
     nd = new Date(utc + (3600000*offset));
 
     // 顯示當地時間
-    return nd.toLocaleString();
+    return (nd.getMonth()+1)+'-'+nd.getDate();
 }
 
 function SortIt(input, mainMsg) {
