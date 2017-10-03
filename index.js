@@ -9,6 +9,9 @@ var outType = 'text';
 var event = '';
 var v_path = '/v2/bot/message/reply';
 var meowSwitch = 'off';
+var date = new Date();
+
+console.log(date);
 
 
 var options = {
