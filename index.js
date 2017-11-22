@@ -225,18 +225,36 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
     else if (trigger.match(/貓/) != null) {
         return Meow();
     }
-    else if (trigger == 'gid'){
-	    
-	console.log(event.source.groupId);    
+    else if (trigger == 'test'){
+	//test();
+	//console.log(event.source.groupId);    
     }
 }
 
 ////////////////////////////////////////
-//////////////// 分析開始 //////////////
+//////////////// test //////////////
 ////////////////////////////////////////
+
+function test(){
+
+    https.get('https://encrypted.google.com/', (res) => {
+        console.log('statusCode:', res.statusCode);
+        console.log('headers:', res.headers);
+
+        res.on('data', (d) => {
+            process.stdout.write(d);
+        });
+
+    }).on('error', (e) => {
+        console.error(e);
+    });	
+}
+
+
 if (calcTime(8) == '10-3'){
     replyMsgToLine('push', GroupId, '臭貓生日 祝臭貓生日快樂喵ΦωΦ/');
 }
+
 
 ////////////////////////////////////////
 //////////////// 恩...
