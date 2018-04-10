@@ -461,6 +461,20 @@ function choice(input, str) {
     return str[0] + '[' + a + '] → ' + a[Math.floor((Math.random() * (a.length + 0)))];
 }
 
+function GetUrl(url, data) {
+    if (data != "" && typeof data != "undefined") {
+        var keys = Object.keys(data);
+        for (var i = 0; i < keys.length; i++) {
+            var dataName = keys[i];
+            if (data.hasOwnProperty(dataName)) {
+                url += (i == 0) ? "?" : "&";
+                url += dataName + "=" + data[dataName];
+            }
+        }
+    }
+    return url;
+}
+
 ////////////////////////////////////////
 //////////////// Help
 ////////////////////////////////////////
