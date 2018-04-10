@@ -184,6 +184,56 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
 	return funnyreturn('cake');	
     }
 
+	
+	//google
+        // 縮網址
+    else if (trigger == 'shorten' && mainMsg.length > 1){
+        
+	var s = ''; 
+	for (i = 1; i < mainMsg.length; i++) {
+	    s = s + mainMsg[i]+ ' ';
+        }
+	    
+	var rq = require("request");
+	rq.post('https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s', {
+            json: {
+                'longUrl': s
+            }
+        }, function (error, response, body) {
+            if(error) {
+                return 'error' + error;
+            } else {
+		s = body.id;
+		replyMsgToLine(outType, rplyToken, s);
+            }
+        });
+	    
+    //google
+    }
+    else if((trigger == 'google' || trigger == '搜尋' || trigger == '谷哥') && mainMsg.length > 1){
+        var tmp = ''; 
+	for (i = 1; i < mainMsg.length; i++) {
+	    tmp = tmp + mainMsg[i]+ ' ';
+        }
+	    
+	let s = GetUrl('https://www.google.com.tw/search', {
+            q: tmp
+        });
+	    
+	var rq = require("request");
+	rq.post('https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s', {
+            json: {
+                'longUrl': s
+            }
+        }, function (error, response, body) {
+            if(error) {
+                return 'error' + error;
+            } else {
+		s = body.id;
+		replyMsgToLine(outType, rplyToken, s + '\n' + Google());
+            }
+        });
+    }
 	//喵喵叫開關
     else if (trigger == '貓咪安靜' || trigger == '貓咪閉嘴' || trigger == '貓咪不要吵' || trigger == '貓咪不要叫' || trigger == '猫咪安静'|| trigger == '猫咪闭嘴'|| trigger == '猫咪不要吵'|| trigger == '猫咪不要叫') {
    	meowSwitch = 'off';
