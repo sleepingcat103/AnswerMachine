@@ -1,7 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var https = require('https');
-var translate = require('google-translate');
 var app = express();
  
 var jsonParser = bodyParser.json();
