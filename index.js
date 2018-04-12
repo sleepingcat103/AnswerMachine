@@ -195,7 +195,7 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
     // 縮網址
     else if (trigger == 'shorten' && mainMsg.length > 1) {
 	    
-        var s = mainMsg.substring(mainMsg.indexOf(' ')+1);
+        var s = inputStr.substring(inputStr.indexOf(' ')+1);
 	//var s = ''; 
 	//for (i = 1; i < mainMsg.length; i++) {
 	//    s = s + mainMsg[i]+ ' ';
@@ -219,7 +219,7 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
     //google search
     else if((trigger == 'google' || trigger == '搜尋' || trigger == '谷哥') && mainMsg.length > 1){
         
-	var tmp = mainMsg.substring(mainMsg.indexOf(' ')+1);
+	var tmp = inputStr.substring(inputStr.indexOf(' ')+1);
 	//var s = ''; 
 	//for (i = 1; i < mainMsg.length; i++) {
 	//    s = s + mainMsg[i]+ ' ';
@@ -245,7 +245,7 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
     }
 	
     else if((trigger == 'translate' || trigger == '翻譯') && mainMsg.length > 1) {
-	var s = mainMsg.substring(mainMsg.indexOf(' ')+1);
+	var s = inputStr.substring(inputStr.indexOf(' ')+1);
 	    
 	translate.detectLanguage('Hello', function(err, detection){
             console.log(detection);
