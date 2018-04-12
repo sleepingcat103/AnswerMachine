@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var https = require('https');
+var translate = require('google-translate');
 var app = express();
  
 var jsonParser = bodyParser.json();
@@ -66,6 +67,8 @@ app.listen(app.get('port'), function () {
 function replyMsgToLine(outType, rplyToken, rplyVal) {
 
     let rplyObj;
+	
+    //圖片回復
     if (outType == 'image') {
         v_path = '/v2/bot/message/reply';
         rplyObj = {
@@ -78,6 +81,8 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
               }
             ]
         }
+	    
+    //發送給特定群組(文字)
     } else if (outType == 'push') {
         v_path = '/v2/bot/message/push';
         rplyObj = {
@@ -89,6 +94,8 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
               }
             ]
         }
+	    
+    //普通文字訊息
     } else {
         v_path = '/v2/bot/message/reply';
         rplyObj = {
@@ -184,15 +191,15 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
 	return funnyreturn('cake');	
     }
 
-	
-	//google
-        // 縮網址
-    else if (trigger == 'shorten' && mainMsg.length > 1){
-        
-	var s = ''; 
-	for (i = 1; i < mainMsg.length; i++) {
-	    s = s + mainMsg[i]+ ' ';
-        }
+    //google
+    // 縮網址
+    else if (trigger == 'shorten' && mainMsg.length > 1) {
+	    
+        var s = mainMsg.substring(mainMsg.trim().indexOf(' ')+1);
+	//var s = ''; 
+	//for (i = 1; i < mainMsg.length; i++) {
+	//    s = s + mainMsg[i]+ ' ';
+        //}
 	    
 	var rq = require("request");
 	rq.post('https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s', {
@@ -207,14 +214,16 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
 		replyMsgToLine(outType, rplyToken, s);
             }
         });
-	    
-    //google
     }
+	
+    //google search
     else if((trigger == 'google' || trigger == '搜尋' || trigger == '谷哥') && mainMsg.length > 1){
-        var tmp = ''; 
-	for (i = 1; i < mainMsg.length; i++) {
-	    tmp = tmp + mainMsg[i]+ ' ';
-        }
+        
+	var s = mainMsg.substring(mainMsg.trim().indexOf(' ')+1);
+	//var s = ''; 
+	//for (i = 1; i < mainMsg.length; i++) {
+	//    s = s + mainMsg[i]+ ' ';
+        //}
 	    
 	let s = GetUrl('https://www.google.com.tw/search', {
             q: tmp
@@ -234,7 +243,19 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
             }
         });
     }
-	//喵喵叫開關
+	
+    else if(trigger == 'translate' || trigger == '翻譯') {
+	var s = mainMsg.substring(mainMsg.trim().indexOf(' ')+1);
+	    
+	translate.detectLanguage('Hello', function(err, detection){
+            console.log(detection);
+	    console.log(JSON.stringify(detection));
+	    // =>  { language: "en", isReliable: false, confidence: 0.5714286, originalText: "Hello" }
+            //replyMsgToLine(outType, rplyToken, s + '\n' + Google());
+        });
+    }
+	
+    //喵喵叫開關
     else if (trigger == '貓咪安靜' || trigger == '貓咪閉嘴' || trigger == '貓咪不要吵' || trigger == '貓咪不要叫' || trigger == '猫咪安静'|| trigger == '猫咪闭嘴'|| trigger == '猫咪不要吵'|| trigger == '猫咪不要叫') {
    	meowSwitch = 'off';
 	return '......';
@@ -244,7 +265,7 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
 	return Meow();
     }
 	
-	//正常功能
+    //一般功能
     else if (trigger.match(/運氣|運勢|运势|运气/) != null) {
         return randomLuck(mainMsg); //占卜運氣
     }
@@ -260,11 +281,11 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
     else if (trigger.match(/排序|排列/) != null && mainMsg.length >= 3) {
         return SortIt(inputStr, mainMsg);
     }   
-        //生科火大圖指令開始於此
-    else if (trigger == '!生科') {
-        outType = 'image';
-        return 'https://i.imgur.com/jYxRe8wl.jpg';
-    }
+    //    //生科火大圖指令開始於此
+    //else if (trigger == '!生科') {
+    //    outType = 'image';
+    //    return 'https://i.imgur.com/jYxRe8wl.jpg';
+    //}
         //choice 指令開始於此
     else if (trigger.match(/choice|隨機|選項|幫我選|幫我挑|随机|选项|帮我选/) != null && mainMsg.length >= 3) {
         return choice(inputStr, mainMsg);
@@ -275,31 +296,11 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
     else if (trigger.match(/貓/) != null) {
         return Meow();
     }
-    else if (trigger == 'test'){
-	//test();
-	//console.log(event.source.groupId);    
-    }
 }
 
 ////////////////////////////////////////
 //////////////// test //////////////
 ////////////////////////////////////////
-
-function test(){
-
-    https.get('https://encrypted.google.com/', (res) => {
-        console.log('statusCode:', res.statusCode);
-        console.log('headers:', res.headers);
-
-        res.on('data', (d) => {
-            process.stdout.write(d);
-        });
-
-    }).on('error', (e) => {
-        console.error(e);
-    });	
-}
-
 
 if (calcTime(8) == '10-3'){
     replyMsgToLine('push', GroupId, '臭貓生日 祝臭貓生日快樂喵ΦωΦ/');
