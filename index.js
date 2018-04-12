@@ -244,17 +244,6 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
         });
     }
 	
-    else if((trigger == 'translate' || trigger == '翻譯') && mainMsg.length > 1) {
-	var s = inputStr.substring(inputStr.indexOf(' ')+1);
-	    
-	translate.detectLanguage('Hello', function(err, detection){
-            console.log(detection);
-	    console.log(JSON.stringify(detection));
-	    // =>  { language: "en", isReliable: false, confidence: 0.5714286, originalText: "Hello" }
-            //replyMsgToLine(outType, rplyToken, s + '\n' + Google());
-        });
-    }
-	
     //喵喵叫開關
     else if (trigger == '貓咪安靜' || trigger == '貓咪閉嘴' || trigger == '貓咪不要吵' || trigger == '貓咪不要叫' || trigger == '猫咪安静'|| trigger == '猫咪闭嘴'|| trigger == '猫咪不要吵'|| trigger == '猫咪不要叫') {
    	meowSwitch = 'off';
