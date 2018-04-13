@@ -284,7 +284,37 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
         return Meow();
     }
 }
-
+////////////////////////////////////////
+//////////////// 統一發票
+////////////////////////////////////////
+function TWticket(replyToken) {
+    
+    var options = {
+        uri: 'http://invoice.etax.nat.gov.tw/index.html',
+        transform: function (body) {
+            return cheerio.load(body);
+        }
+    };
+    rp(options).then(function ($) {
+        var fax = $(".t18Red");
+        
+        var s = 
+        $("#area1")[0].children[3].children[0].data.halfToFull() +
+        '\n-----特別獎-----\n    ' + 
+        fax[0].children[0].data.halfToFull() + 
+        '\n------特獎------\n    ' + 
+        fax[1].children[0].data.halfToFull() +
+        '\n---頭獎～六獎---\n    ' + 
+        fax[2].children[0].data.replace(/、/g, '\n    ').halfToFull() +
+        '\n----增開六獎----\n         ' + 
+        fax[3].children[0].data.replace(/、/g, '\n         ').halfToFull();
+        
+        replyMsgToLine(outType, replyToken, s);
+    })
+    .catch(function (err) {
+        console.log(err);
+    });
+}
 ////////////////////////////////////////
 //////////////// test //////////////
 ////////////////////////////////////////
