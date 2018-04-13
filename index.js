@@ -2,6 +2,8 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var https = require('https');
 var app = express();
+var cheerio = require("cheerio");
+var rp = require('request-promise');
  
 var jsonParser = bodyParser.json();
 
@@ -189,16 +191,17 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
     else if (trigger == '!蛋糕') {
 	return funnyreturn('cake');	
     }
+    
+    //發票
+    else if ((trigger == '統一發票' || trigger == '發票') && mainMsg.length == 1) {
+        return TWticket(rplyToken);
+    }
 
     //google
     // 縮網址
     else if (trigger == 'shorten' && mainMsg.length > 1) {
 	    
         var s = inputStr.substring(inputStr.indexOf(' ')+1);
-	//var s = ''; 
-	//for (i = 1; i < mainMsg.length; i++) {
-	//    s = s + mainMsg[i]+ ' ';
-        //}
 	    
 	var rq = require("request");
 	rq.post('https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s', {
@@ -219,10 +222,6 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
     else if((trigger == 'google' || trigger == '搜尋' || trigger == '谷哥') && mainMsg.length > 1){
         
 	var tmp = inputStr.substring(inputStr.indexOf(' ')+1);
-	//var s = ''; 
-	//for (i = 1; i < mainMsg.length; i++) {
-	//    s = s + mainMsg[i]+ ' ';
-        //}
 	    
 	let s = GetUrl('https://www.google.com.tw/search', {
             q: tmp
@@ -255,7 +254,7 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
 	
     //一般功能
     else if (trigger.match(/運氣|運勢|运势|运气/) != null) {
-        return randomLuck(mainMsg); //占卜運氣
+        return Luck(mainMsg[0], rplyToken); //各種運氣
     }
     else if (trigger.match(/立flag|死亡flag/) != null) {
         return BStyleFlagSCRIPTS();
@@ -408,9 +407,53 @@ function BStyleFlagSCRIPTS() {
 }
 
 
-function randomLuck(TEXT) {
-    let rplyArr = ['超大吉', '大吉', '大吉', '中吉', '中吉', '中吉', '小吉', '小吉', '小吉', '小吉', '凶', '凶', '凶', '大凶', '大凶', '你還是，不要知道比較好'];
-    return TEXT[0] + ' ： ' + rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+////////////////////////////////////////
+//////////////// 運氣運勢相關
+////////////////////////////////////////
+function Luck(str, replyToken) {
+    var table = ['牡羊.白羊.牡羊座.白羊座', '金牛.金牛座', '雙子.雙子座', '巨蟹.巨蟹座', '獅子.獅子座', '處女.處女座', '天秤.天平.天秤座.天平座', '天蠍.天蠍座', '射手.射手座', '魔羯.魔羯座', '水瓶.水瓶座', '雙魚.雙魚座'];
+    var target = str.replace('運氣', '').replace('運勢','').replace('运势','').replace('运气','');
+	
+    var index = table.indexOf(table.find(function(element){
+        if(element.indexOf(target)>0) return element;
+    }));
+	
+    if(index>0){
+        Constellation(index, replyToken);
+	return;
+    }else{
+        let rplyArr = ['超大吉', '大吉', '大吉', '中吉', '中吉', '中吉', '小吉', '小吉', '小吉', '小吉', '凶', '凶', '凶', '大凶', '大凶', '你還是，不要知道比較好', '這應該不關我的事'];
+        return str + ' ： ' + rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+    }
+}
+
+function Constellation(index, replyToken) {
+    var today = new Date().toISOString().substring(0, 10);
+    var options = {
+        uri: 'http://astro.click108.com.tw/daily_' + index + '.php?iAcDay=' + today + '&iAstro=' + index,
+        transform: function (body) {
+            return cheerio.load(body);
+        }
+    };
+    rp(options).then(function ($) {
+        var fax = $(".TODAY_CONTENT")[0]
+        
+        var s = 
+        fax.children[1].children[0].data + '\n' +
+        fax.children[3].children[0].children[0].data + '\n' +
+        fax.children[4].children[0].data + '\n' +
+        fax.children[6].children[0].children[0].data + '\n' +
+        fax.children[7].children[0].data + '\n' +
+        fax.children[9].children[0].children[0].data + '\n' +
+        fax.children[10].children[0].data + '\n' +
+        fax.children[12].children[0].children[0].data + '\n' +
+        fax.children[13].children[0].data;
+        
+        replyMsgToLine(outType, replyToken, s);
+    })
+    .catch(function (err) {
+        console.log("Fail to get data.");
+    });
 }
 
 
