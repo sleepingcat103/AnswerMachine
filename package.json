@@ -1,7 +1,7 @@
 {
-  "name": "leoli",
-  "version": "0.2.0",
-  "description": "LeoLi Line Bot",
+  "name": "SC",
+  "version": "1.0.0",
+  "description": "SC Line Bot",
   "engines": {
     "node": "6.11.1"
   },
@@ -13,11 +13,12 @@
     "express": "4.13.3",
     "request": "2.85.0",
     "body-parser": "1.15.2",
-    "google-translate": "2.1.0"
+    "request-promise": "^4.2.2",
+    "cheerio": "^1.0.0-rc.2",
   },
   "keywords": [
-    "LeoLi",
+    "SC",
     "Line"
   ],
-  "license": "MIT"
+  "license": "MIT.SC"
 }
