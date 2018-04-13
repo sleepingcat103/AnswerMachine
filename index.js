@@ -305,9 +305,9 @@ function TWticket(replyToken) {
         '\n------特獎------\n    ' + 
         fax[1].children[0].data.halfToFull() +
         '\n---頭獎～六獎---\n    ' + 
-        fax[2].children[0].data.replace(/、/g, '\n    ').halfToFull() +
+        fax[2].children[0].data.replace(/、/g, '\n    ').halfToFull(false) +
         '\n----增開六獎----\n         ' + 
-        fax[3].children[0].data.replace(/、/g, '\n         ').halfToFull();
+        fax[3].children[0].data.replace(/、/g, '\n         ').halfToFull(false);
         
         replyMsgToLine(outType, replyToken, s);
     })
@@ -583,14 +583,16 @@ function Google(){
 ////////////////////////////////////////
 ////////////////prototype
 ////////////////////////////////////////
-String.prototype.halfToFull = function () {
+String.prototype.halfToFull = function (flag) {
     var temp = "";
     for (var i = 0; i < this.toString().length; i++) {
         var charCode = this.toString().charCodeAt(i);
         if (charCode <= 126 && charCode >= 33) {
             charCode += 65248;
         } else if (charCode == 32) { // 半形空白轉全形
-            charCode = 12288;
+	    if(flag){
+                charCode = 12288;
+	    }
         }
         temp = temp + String.fromCharCode(charCode);
     }
