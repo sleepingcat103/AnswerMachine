@@ -579,3 +579,20 @@ function Google(){
 小學生才叫貓google喵', '搜尋這甚麼鬼東西喵!! (炸毛)', '好不容易幫你搜尋了，心懷感激的看吧喵!', '居然搜尋這種東西真的是擔心你的腦袋喵...'];
     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
+
+////////////////////////////////////////
+////////////////prototype
+////////////////////////////////////////
+String.prototype.halfToFull = function () {
+    var temp = "";
+    for (var i = 0; i < this.toString().length; i++) {
+        var charCode = this.toString().charCodeAt(i);
+        if (charCode <= 126 && charCode >= 33) {
+            charCode += 65248;
+        } else if (charCode == 32) { // 半形空白轉全形
+            charCode = 12288;
+        }
+        temp = temp + String.fromCharCode(charCode);
+    }
+    return temp;
+};
