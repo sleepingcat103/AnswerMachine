@@ -1,7 +1,7 @@
 {
-    text: 
+    "text": 
     {
-        flag: [
+        "flag": [
             "「打完這仗我就回老家結婚」",
             "「打完這一仗後我請你喝酒」",
             "「你、你要錢嗎！我可以給你更多的錢！」",
@@ -56,7 +56,7 @@
             "「騙人的吧，我們不是朋友嗎？」",
             "「我老爸是....你有種就....」"
         ],
-        luck: [
+        "luck": [
             "超大吉", 
             "大吉", 
             "大吉", 
@@ -75,7 +75,7 @@
             "你還是，不要知道比較好", 
             "這應該不關我的事"
         ],
-        meow: [
+        "meow": [
             "喵喵?", 
             "喵喵喵", 
             "喵?", 
@@ -92,7 +92,7 @@
             "喵!!!", 
             "喵~喵~"
         ],
-        google: [
+        "google": [
             "google很難嗎喵?", 
             "(用腳踩)", 
             "才..才不是特地為你去找的喵!", 
@@ -110,9 +110,9 @@
         ]
     },
     
-    picture: 
+    "picture": 
     {
-        lolicon: [
+        "lolicon": [
             "https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-1.jpg",
             "https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-2.jpg",
             "https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg"
