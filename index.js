@@ -248,29 +248,29 @@ function parseInput(rplyToken, inputStr) {
         });
     }
 	//日幣
-	else if (trigger == '!JP' || trigger == '!日幣') {
+    else if (trigger == '!jp' || trigger == '!日幣') {
         return JP(rplyToken);
     }
 	//貼圖
     else if(IsKeyWord(trigger, ['打架', '互相傷害r', '來互相傷害', '來互相傷害r'])){
-	    return Sticker("2", "517");
+        return Sticker("2", "517");
     }
 	
-	else if(trigger == '幫QQ' || trigger == '哭哭' || mainMsg[0] == 'QQ'){
-	    return Sticker("1", "9");
+    else if(trigger == '幫QQ' || trigger == '哭哭' || mainMsg[0] == 'QQ'){
+        return Sticker("1", "9");
     }
 	
-	else if(trigger == '<3'){
-	    return Sticker("1", "410");
+    else if(trigger == '<3'){
+        return Sticker("1", "410");
     }
 	
-	else if(trigger == '招財貓'){
-	    return Sticker("4", "607");
-		
+    else if(trigger == '招財貓'){
+        return Sticker("4", "607");
     }
-	else if(IsKeyWord(trigger, ['好冷', '很冷', '冷爆啦', '冷死'])){
-	    return Sticker("2", "29");
-	}
+	
+    else if(IsKeyWord(trigger, ['好冷', '很冷', '冷爆啦', '冷死'])){
+        return Sticker("2", "29");
+    }
     
     //喵喵叫開關
     else if (trigger == '貓咪安靜' || trigger == '貓咪閉嘴' || trigger == '貓咪不要吵' || trigger == '貓咪不要叫') {
