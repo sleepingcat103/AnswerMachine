@@ -243,7 +243,7 @@ function parseInput(rplyToken, inputStr) {
                 return 'error' + error;
             } else {
                 s = body.id;
-                replyMsgToLine(outType, rplyToken, s + '\n' + randomReturn.text.google.getRandom(););
+                replyMsgToLine(outType, rplyToken, s + '\n' + randomReturn.text.google.getRandom());
             }
         });
     }
