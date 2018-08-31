@@ -4,6 +4,7 @@ var https = require('https');
 var app = express();
 var cheerio = require("cheerio");
 var rp = require('request-promise');
+var randomReturn = require('./RandomReturn.json');
  
 var jsonParser = bodyParser.json();
 
@@ -32,13 +33,13 @@ app.get('/', function (req, res) {
 app.post('/', jsonParser, function (req, res) {
     event = req.body.events[0];
     let type = event.type;
-	
+    
     let msgType = event.message.type;
     let msg = event.message.text;
     let rplyToken = event.replyToken;
 
     let rplyVal = null;
-	
+    
     outType = 'text';
 
     console.log(msg);
@@ -48,10 +49,10 @@ app.post('/', jsonParser, function (req, res) {
         }
         catch (e) {
             console.log('catch error');
-	    console.log(e.toString());
+        console.log(e.toString());
         }
     }
-	
+    
     if (rplyVal) {
         replyMsgToLine(outType, rplyToken, rplyVal);
     } else {
@@ -68,7 +69,7 @@ app.listen(app.get('port'), function () {
 function replyMsgToLine(outType, rplyToken, rplyVal) {
 
     let rplyObj;
-	
+    
     //圖片回復
     if (outType == 'image') {
         v_path = '/v2/bot/message/reply';
@@ -82,22 +83,31 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
               }
             ]
         }
-	    
+    } 
     //發送給特定群組(文字)
-    } else if (outType == 'push') {
+    else if (outType == 'push') {
         v_path = '/v2/bot/message/push';
         rplyObj = {
             to: rplyToken,
             messages: [
-              {
+                {
                   type: "text",
                   text: rplyVal
-              }
+                }
             ]
         }
-	    
+    } 
+	
+	else if (outType == 'sticker') {
+        v_path = '/v2/bot/message/reply';
+        rplyObj = {
+            replyToken: rplyToken,
+            messages: [rplyVal]
+        }
+    }
+	
     //普通文字訊息
-    } else {
+    else {
         v_path = '/v2/bot/message/reply';
         rplyObj = {
             replyToken: rplyToken,
@@ -151,46 +161,42 @@ function parseInput(rplyToken, inputStr) {
     }
     let msgSplitor = (/\S+/ig);
     let mainMsg = inputStr.match(msgSplitor); //定義輸入字串
-    let trigger = mainMsg[0].toString().toLowerCase(); //指定啟動詞在第一個詞&把大階強制轉成細階
-	
+    let trigger = mainMsg[0].toString().toLowerCase(); //指定啟動詞在第一個詞，轉小寫方便辨識
+    
     console.log('trigger: ' + trigger);
-	
-    if (trigger == '!二毛88' || trigger == '!蘿莉控' || trigger == '!3年'  || trigger == '!三年') {
-        let rplyArr = ['\
-https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-1.jpg','\
-https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-2.jpg','\
-https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
-	outType = 'image';
-	return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+    
+    if (trigger == '!蘿莉控' || trigger == '!3年'  || trigger == '!三年') {
+        outType = 'image';
+        return randomReturn.image.lolicon.getRandom();
     }
-    	//各種針對
-    if (trigger == '!二毛') {
-        return funnyreturn('twofur');
-    } 
-    if (trigger == '!阿紫' || trigger == '!紫') {
-        return funnyreturn('purple');
-    } 
-    else if (trigger == '!臭貓' || trigger == '!臭猫') {
+        //各種針對
+    // if (trigger == '!二毛') {
+        // return funnyreturn('twofur');
+    // } 
+    // if (trigger == '!阿紫' || trigger == '!紫') {
+        // return funnyreturn('purple');
+    // } 
+    else if (trigger == '!臭貓') {
         return funnyreturn('author');
     } 
-    else if (trigger == '!貓貓' || trigger == '猫猫') {
-        return funnyreturn('ccat');
-    } 
-    else if (trigger == '!miya') {
-        return funnyreturn('miya');
-    }
-    else if (trigger == '!拖拉') {
-        return funnyreturn('slow');
-    }
-    else if (trigger == '!白毛') {
-	return funnyreturn('whitefur');
-    }
-    else if (trigger == '!璃璃' || trigger == '!莉莉') {
-	return funnyreturn('lili');	
-    }
-    else if (trigger == '!蛋糕') {
-	return funnyreturn('cake');	
-    }
+    // else if (trigger == '!貓貓' || trigger == '??') {
+        // return funnyreturn('ccat');
+    // } 
+    // else if (trigger == '!miya') {
+        // return funnyreturn('miya');
+    // }
+    // else if (trigger == '!拖拉') {
+        // return funnyreturn('slow');
+    // }
+    // else if (trigger == '!白毛') {
+    // return funnyreturn('whitefur');
+    // }
+    // else if (trigger == '!璃璃' || trigger == '!莉莉') {
+    // return funnyreturn('lili');    
+    // }
+    // else if (trigger == '!蛋糕') {
+    // return funnyreturn('cake');    
+    //} 
     
     //發票
     else if ((trigger == '統一發票' || trigger == '發票') && mainMsg.length == 1) {
@@ -200,11 +206,11 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
     //google
     // 縮網址
     else if (trigger == 'shorten' && mainMsg.length > 1) {
-	    
+        
         var s = inputStr.substring(inputStr.indexOf(' ')+1);
-	    
-	var rq = require("request");
-	rq.post('https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s', {
+        
+        var rq = require("request");
+        rq.post('https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s', {
             json: {
                 'longUrl': s
             }
@@ -212,23 +218,23 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
             if(error) {
                 return 'error' + error;
             } else {
-		s = body.id;
-		replyMsgToLine(outType, rplyToken, s);
+                s = body.id;
+                replyMsgToLine(outType, rplyToken, s);
             }
         });
     }
-	
+    
     //google search
     else if((trigger == 'google' || trigger == '搜尋' || trigger == '谷哥') && mainMsg.length > 1){
         
-	var tmp = inputStr.substring(inputStr.indexOf(' ')+1);
-	    
-	let s = GetUrl('https://www.google.com.tw/search', {
+        var tmp = inputStr.substring(inputStr.indexOf(' ')+1);
+        
+        let s = GetUrl('https://www.google.com.tw/search', {
             q: tmp
         });
-	    
-	var rq = require("request");
-	rq.post('https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s', {
+        
+        var rq = require("request");
+        rq.post('https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s', {
             json: {
                 'longUrl': s
             }
@@ -236,28 +242,52 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
             if(error) {
                 return 'error' + error;
             } else {
-		s = body.id;
-		replyMsgToLine(outType, rplyToken, s + '\n' + Google());
+                s = body.id;
+                replyMsgToLine(outType, rplyToken, s + '\n' + randomReturn.text.google.getRandom(););
             }
         });
     }
+	//日幣
+	else if (trigger == '!JP' || trigger == '!日幣') {
+        return JP(rplyToken);
+    }
+	//貼圖
+    else if(IsKeyWord(trigger, ['打架', '互相傷害r', '來互相傷害', '來互相傷害r'])){
+	    return Sticker("2", "517");
+    }
 	
+	else if(trigger == '幫QQ' || trigger == '哭哭' || mainMsg[0] == 'QQ'){
+	    return Sticker("1", "9");
+    }
+	
+	else if(trigger == '<3'){
+	    return Sticker("1", "410");
+    }
+	
+	else if(trigger == '招財貓'){
+	    return Sticker("4", "607");
+		
+    }
+	else if(IsKeyWord(trigger, ['好冷', '很冷', '冷爆啦', '冷死'])){
+	    return Sticker("2", "29");
+	}
+    
     //喵喵叫開關
-    else if (trigger == '貓咪安靜' || trigger == '貓咪閉嘴' || trigger == '貓咪不要吵' || trigger == '貓咪不要叫' || trigger == '猫咪安静'|| trigger == '猫咪闭嘴'|| trigger == '猫咪不要吵'|| trigger == '猫咪不要叫') {
-   	meowSwitch = 'off';
-	return '......';
+    else if (trigger == '貓咪安靜' || trigger == '貓咪閉嘴' || trigger == '貓咪不要吵' || trigger == '貓咪不要叫') {
+        meowSwitch = 'off';
+        return '......';
     }
-    else if (trigger == '貓咪在哪裡' || trigger == '猫咪在哪里'){
-	meowSwitch = 'on';
-	return Meow();
+    else if (trigger == '貓咪在哪裡'){
+        meowSwitch = 'on';
+        return randomReturn.text.meow.getRandom();
     }
-	
+    
     //一般功能
-    else if (trigger.match(/運氣|運勢|运势|运气/) != null) {
+    else if (trigger.match(/運氣|運勢/) != null) {
         return Luck(mainMsg[0], rplyToken); //各種運氣
     }
     else if (trigger.match(/立flag|死亡flag/) != null) {
-        return BStyleFlagSCRIPTS();
+        return randomReturn.text.flag.getRandom();
     }    
     else if (trigger == '!貓咪') {
         return MeowHelp();
@@ -267,23 +297,41 @@ https://raw.githubusercontent.com/sleepingcat103/RoboYabaso/master/lc-0.jpg'];
     }
     else if (trigger.match(/排序|排列/) != null && mainMsg.length >= 3) {
         return SortIt(inputStr, mainMsg);
-    }   
-    //    //生科火大圖指令開始於此
-    //else if (trigger == '!生科') {
-    //    outType = 'image';
-    //    return 'https://i.imgur.com/jYxRe8wl.jpg';
-    //}
-        //choice 指令開始於此
-    else if (trigger.match(/choice|隨機|選項|幫我選|幫我挑|随机|选项|帮我选/) != null && mainMsg.length >= 3) {
+    }
+    else if (trigger.match(/choice|隨機|選項|幫我選|幫我挑/) != null && mainMsg.length >= 3) {
         return choice(inputStr, mainMsg);
     }
-    else if (trigger.match(/喵/) != null) {
-        return Meow();
-    }
-    else if (trigger.match(/貓/) != null) {
-        return Meow();
+    else if (trigger.match(/喵|貓/) != null) {
+        return randomReturn.text.meow.getRandom();
     }
 }
+////////////////////////////////////////
+//////////////// jp
+////////////////////////////////////////
+
+function JP(replyToken) {
+    var options = {
+        uri: "https://www.esunbank.com.tw/bank/personal/deposit/rate/forex/foreign-exchange-rates",
+        transform: function (body) {
+            return cheerio.load(body);
+        }
+    };
+    rp(options)
+        .then(function ($) {
+            var fax = $("#inteTable1 > tbody > .tableContent-light");
+            var str = "玉山銀行目前日幣的即期賣出匯率為 " + fax[3].children[5].children[0].data + " 換起來! ヽ(`Д´)ノ";
+            //str += "\r\n"+fax[3].children[3].attribs["data-name"] + "  " +fax[3].children[3].children[0].data;
+            //str += "\r\n"+fax[3].children[5].attribs["data-name"] + "  " +fax[3].children[5].children[0].data;
+            //str += "\r\n"+fax[3].children[7].attribs["data-name"] + "  " +fax[3].children[7].children[0].data;
+            //str += "\r\n"+fax[3].children[9].attribs["data-name"] + "  " +fax[3].children[9].children[0].data;
+            console.log(str);
+            replyMsgToLine(outType, replyToken, str);
+        })
+        .catch(function (err) {
+            return "Fail to get data.";
+        });
+}
+
 ////////////////////////////////////////
 //////////////// 統一發票
 ////////////////////////////////////////
@@ -323,7 +371,18 @@ if (calcTime(8) == '10-3'){
     replyMsgToLine('push', GroupId, '臭貓生日 祝臭貓生日快樂喵ΦωΦ/');
 }
 
-
+////////////////////////////////////////
+//////////////// stickers
+////////////////////////////////////////
+function Sticker(package, sticker){
+	outType = 'sticker';
+	var stk = {
+	    type: "sticker",
+	    packageId: package,
+	    stickerId: sticker
+	};
+	return stk;
+}
 ////////////////////////////////////////
 //////////////// 恩...
 ////////////////////////////////////////
@@ -338,9 +397,9 @@ function funnyreturn(name) {
     let whitefurArr = ['使出異次元攻擊！扭轉故事！','可以開始十八禁話題了嗎','(小劇場運作中)','阿阿來了!!又有靈感了!','希望..我以外的人都能幸福..(悲壯)'];
     let liliArr = ['看我的金雞獨莉!', '一條腿也很帥(發亮)','喔是喔','。','???(黑人問號臉)'];
     let cakeArr = ['\超帥/','今天有個女生跟我要電話 @ @','吃垮他!!╰（‵□′╰','死都不曝照030','白毛你這樣不行'];
-	
+    
     var rplyArr;
-	
+    
     if (name == 'twofur') {
         rplyArr = twofurArr;
     } 
@@ -360,100 +419,34 @@ function funnyreturn(name) {
         rplyArr = slowArr;
     }
     else if (name == 'whitefur') {
-	rplyArr = whitefurArr;    
+        rplyArr = whitefurArr;    
     }
     else if (name == 'lili') {
-    	rplyArr = liliArr;
+        rplyArr = liliArr;
     }
     else if (name == 'cake') {
-    	rplyArr = cakeArr;
+        rplyArr = cakeArr;
     }
-	
+    
      return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
 }
-
-////////////////////////////////////////
-//////////////// 占卜&其他
-////////////////////////////////////////
-
-
-function BStyleFlagSCRIPTS() {
-    let rplyArr = ['\
-「打完這仗我就回老家結婚」', '\
-「打完這一仗後我請你喝酒」', '\
-「你、你要錢嗎！我可以給你更多的錢！」', '\
-「做完這次任務，我就要結婚了。」', '\
-「幹完這一票我就金盆洗手了。」', '\
-「好想再XXX啊……」', '\
-「已經沒什麼好害怕的了」', '\
-「我一定會回來的」', '\
-「差不多該走了」', '\
-「我只是希望你永遠不要忘記我。」', '\
-「我只是希望能永遠和你在一起。」', '\
-「啊啊…為什麼會在這種時候、想起了那些無聊的事呢？」', '\
-「能遇見你真是太好了。」', '\
-「我終於…為你們報仇了！」', '\
-「等到一切結束後，我有些話想跟妳說！」', '\
-「這段時間我過的很開心啊。」', '\
-把自己的寶物借給其他人，然後說「待一切結束後記得還給我。」', '\
-「真希望這份幸福可以永遠持續下去。」', '\
-「我們三個人要永永遠遠在一起！」', '\
-「這是我女兒的照片，很可愛吧？」', '\
-「請告訴他/她，我永遠愛他/她」', '\
-「聽好，在我回來之前絕不要亂走動哦」', '\
-「要像一個乖孩子一樣等著我回來」', '\
-「我去去就來」', '\
-「快逃！」', '\
-「對方只有一個人，大家一起上啊」', '\
-「我就不信，這麼多人還殺不了他一個！」', '\
-「幹，幹掉了嗎？」', '\
-「身體…好輕…」', '\
-「可惡！你給我看著！（逃跑）」', '\
-「躲在這裡就應該不會被發現了吧。」', '\
-「我不會讓任何人死的。」', '\
-「可惡！原來是這麼回事！」', '\
-「跑這麼遠應該就行了。」', '\
-「我已經甚麼都不怕了」', '\
-「這XXX是什麼，怎麼之前沒見過」', '\
-「什麼聲音……我就去確認一下……」', '\
-「是我的錯覺嗎？/果然是錯覺/錯覺吧/可能是我（看/聽）錯了」', '\
-「二十年後又是一條好漢！」', '\
-「大人/將軍武運昌隆」', '\
-「這次報酬是以前都無法比較的」', '\
-「我才不要和罪犯呆在一起，我回自己的房間去了！」', '\
-「我已經天下無敵了~~」', '\
-「大人！這邊就交給小的吧，請快離開這邊吧」', '\
-「這就是我們流派的最終奧義。這一招我只會演示一次，你看好了！」', '\
-「誰敢殺我？」', '\
-「從來沒有人能越過我的劍圍。」', '\
-「就算殺死也沒問題吧？」', '\
-「看我塔下強殺！」', '\
-「這裡交給我吧」', '\
-「事情不可能再更糟了」', '\
-「騙人的吧，我們不是朋友嗎？」', '\
-「我老爸是....你有種就....」'];
-
-    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
-}
-
 
 ////////////////////////////////////////
 //////////////// 運氣運勢相關
 ////////////////////////////////////////
 function Luck(str, replyToken) {
     var table = ['牡羊.白羊.牡羊座.白羊座', '金牛.金牛座', '雙子.雙子座', '巨蟹.巨蟹座', '獅子.獅子座', '處女.處女座', '天秤.天平.天秤座.天平座', '天蠍.天蠍座', '射手.射手座', '魔羯.魔羯座', '水瓶.水瓶座', '雙魚.雙魚座'];
-    var target = str.replace('運氣', '').replace('運勢','').replace('运势','').replace('运气','');
-	
+    var target = str.replace('運氣', '').replace('運勢','');
+    
     var index = table.indexOf(table.find(function(element){
-        if(element.indexOf(target)>0) return element;
+        if(element.indexOf(target)>-1) return element;
     }));
-	
-    if(index>0){
+    
+    if(index>-1){
         Constellation(index, replyToken);
-	return;
+        return;
     }else{
-        let rplyArr = ['超大吉', '大吉', '大吉', '中吉', '中吉', '中吉', '小吉', '小吉', '小吉', '小吉', '凶', '凶', '凶', '大凶', '大凶', '你還是，不要知道比較好', '這應該不關我的事'];
-        return str + ' ： ' + rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+        return str + ' ： ' + randomReturn.text.luck.getRandom();
     }
 }
 
@@ -537,6 +530,22 @@ function GetUrl(url, data) {
     return url;
 }
 
+function IsKeyWord(target, strs){
+    if(target==null||strs==null){
+        return false;
+    }
+	
+    if(target == strs)
+	return true;
+	
+    for(i=0; i<strs.length; i++){
+        if(target == strs[i]){
+            return true;
+        }
+    }
+    return false;
+}
+
 ////////////////////////////////////////
 //////////////// Help
 ////////////////////////////////////////
@@ -547,54 +556,68 @@ function Help() {
 \n \
 \n 使用說明:\
 \n *友善回應(OuOb)*\
-\n	關鍵字: !貓貓/!臭貓/!阿紫/!紫/!二毛/!Miya\
+\n    關鍵字: !臭貓\
+\n *玉山銀行日幣匯率*\
+\n     關鍵字: !JP/!日幣\
+\n *喵喵叫開關*\
+\n     關鍵字: 貓咪安靜/貓咪閉嘴/貓咪不要吵\
+\n     關鍵字2: 貓咪在哪裡\
 \n *選擇功能*\
-\n 	關鍵字: choice/隨機/選項/幫我選\
-\n 	例子: 隨機選顏色 紅 黃 藍\
+\n     關鍵字: choice/隨機/選項/幫我選\
+\n     例子: 隨機選顏色 紅 黃 藍\
 \n *隨機排序*\
-\n 	關鍵字: 排序\
-\n 	例子: 吃東西排序 羊肉 牛肉 豬肉\
+\n     關鍵字: 排序\
+\n     例子: 吃東西排序 羊肉 牛肉 豬肉\
 \n *占卜功能*\
-\n 	關鍵字: 運氣/運勢\
-\n 	例子: 今日運勢\
+\n     關鍵字: 運氣/運勢/天平運勢\
+\n     例子: 今日運勢\
 \n *死亡FLAG*\
-\n 	關鍵字: 立Flag/死亡flag\
+\n     關鍵字: 立Flag/死亡flag\
+\n *其他彩蛋*\
+\n     關鍵字: 不告訴你\
 ';
 }
 
 function MeowHelp() {
-    return Meow() + '\n要做什麼喵?\n\n(輸入 !help 以獲得使用說明)';
+    return randomReturn.text.meow.getRandom() + '\n要做什麼喵?\n\n(輸入 !help 以獲得使用說明)';
 }
 
-function Meow() {
-    let rplyArr = ['喵喵?', '喵喵喵', '喵?', '喵~', '喵喵喵喵!', '喵<3', '喵喵.....', '喵嗚~', '喵喵! 喵喵喵!', '喵喵', '喵', '喵喵!', '喵喵....喵?', '喵!!!', '喵~喵~'];
-    if(meowSwitch == 'on'){
-	return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
-    }
-};
+// function Meow() {
+    // let rplyArr = ['喵喵?', '喵喵喵', '喵?', '喵~', '喵喵喵喵!', '喵<3', '喵喵.....', '喵嗚~', '喵喵! 喵喵喵!', '喵喵', '喵', '喵喵!', '喵喵....喵?', '喵!!!', '喵~喵~'];
+    // if(meowSwitch == 'on'){
+    // return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+    // }
+// };
 
-function Google(){
-    let rplyArr = ['google很難嗎喵?', '(用腳踩)', '才..才不是特地為你去找的喵!', '找好了!\n酬勞就罐罐10個就好了喵<3', '這..這批很純...' + '\
-虐貓!!本貓要罷工喵!!', '(投以鄙視的眼神)', '下次叫狗去找好喵?', '以上內容兒童不宜喵 >///<', '本網站內容只適合18歲或以上人士觀看喵', '\
-小學生才叫貓google喵', '搜尋這甚麼鬼東西喵!! (炸毛)', '好不容易幫你搜尋了，心懷感激的看吧喵!', '居然搜尋這種東西真的是擔心你的腦袋喵...'];
-    return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
-}
+// function Google(){
+    // let rplyArr = ['google很難嗎喵?', '(用腳踩)', '才..才不是特地為你去找的喵!', '找好了!\n酬勞就罐罐10個就好了喵<3', '這..這批很純...' + '\
+// 虐貓!!本貓要罷工喵!!', '(投以鄙視的眼神)', '下次叫狗去找好喵?', '以上內容兒童不宜喵 >///<', '本網站內容只適合18歲或以上人士觀看喵', '\
+// 小學生才叫貓google喵', '搜尋這甚麼鬼東西喵!! (炸毛)', '好不容易幫你搜尋了，心懷感激的看吧喵!', '居然搜尋這種東西真的是擔心你的腦袋喵...'];
+    // return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+// }
 
 ////////////////////////////////////////
 ////////////////prototype
 ////////////////////////////////////////
+
 String.prototype.halfToFull = function (flag) {
+    //半形轉全形
     var temp = "";
     for (var i = 0; i < this.toString().length; i++) {
         var charCode = this.toString().charCodeAt(i);
         if (charCode <= 126 && charCode >= 33) {
             charCode += 65248;
         } else if (charCode == 32) { // 半形空白轉全形
-	    if(flag){
+            if(flag){
                 charCode = 12288;
-	    }
+            }
         }
         temp = temp + String.fromCharCode(charCode);
     }
     return temp;
 };
+
+Array.prototype.getRandom = function (flag) {
+    //取得陣列隨機內容
+    return this[Math.floor((Math.random() * (this.length)) + 0)];
+}
