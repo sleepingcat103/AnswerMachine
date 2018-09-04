@@ -5,6 +5,7 @@ var app = express();
 var cheerio = require("cheerio");
 var rp = require('request-promise');
 var randomReturn = require('./RandomReturn.json');
+var ChannelAccessKey = 'K/RiRP/j8wUy6ZrXuK7NhKaCoNb3mLkapNu82aPsJpLFsjH654+RFDpikiU6msO1hWzXbh2SMD25XEpsq+vsyeLatSz2ZXU6cm39YFyRLoAvrf/HYivzuKN9/UTeSqJypwEj5i6x/VHrSjIirK47ogdB04t89/1O/w1cDnyilFU=';
  
 var jsonParser = bodyParser.json();
 
@@ -116,7 +117,7 @@ function setOptions() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer yHBcDQEPIdiDEzYrI0vx2WjNg5oOPaJqIHxMyIy0tjm0Nm+b+efqwkT14196zelS+PA9vnCtE9YoSXqhLyiIzSTLjbNg1HHl6ARsIWIiHpdU3bLwxLJj6+FEq/IOmz0HOTaxhcko5uVAxt+wZehgXAdB04t89/1O/w1cDnyilFU='
+            'Authorization': 'Bearer ' + ChannelAccessKey
         }
     }
     return options;
