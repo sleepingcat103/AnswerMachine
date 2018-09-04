@@ -386,7 +386,7 @@ function Luck(str, replyToken) {
         if(element.indexOf(target)>-1) return element;
     }));
     
-    if(index < 0){
+    if(index < 0 || target == ''){
         return str + ' ： ' + randomReturn.text.luck.getRandom();
     }else{
         // call request
