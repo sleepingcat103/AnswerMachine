@@ -116,7 +116,7 @@ function setOptions() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer actVI2pGSgmQ+JYuF2il02qMYH+1+3Q6pvaTjjL4J77uWSuVRoTZnloLqZG39jxfuZAWyS77LfHuQ9rHx4vupzxq3sDLKcwRraRq0F0t9B8aULHlhuO2BYmiIvOFjT6Vs+RFkd3GDQnNB2Ykvo6rlgdB04t89/1O/w1cDnyilFU='
+            'Authorization': 'Bearer yHBcDQEPIdiDEzYrI0vx2WjNg5oOPaJqIHxMyIy0tjm0Nm+b+efqwkT14196zelS+PA9vnCtE9YoSXqhLyiIzSTLjbNg1HHl6ARsIWIiHpdU3bLwxLJj6+FEq/IOmz0HOTaxhcko5uVAxt+wZehgXAdB04t89/1O/w1cDnyilFU='
         }
     }
     return options;
@@ -221,8 +221,9 @@ function parseInput(rplyToken, inputStr) {
     }
 }
 
-//// jp
+//// request functions ////
 
+// JP
 function JP(replyToken) {
     var options = {
         uri: "https://www.esunbank.com.tw/bank/personal/deposit/rate/forex/foreign-exchange-rates",
@@ -241,7 +242,7 @@ function JP(replyToken) {
         });
 }
 
-//// google search
+// google search
 
 function googleSrarch(str, replyToken){
         
@@ -264,7 +265,7 @@ function googleSrarch(str, replyToken){
     });
 }
 
-/// shorten Url
+// shorten Url
 
 function shortenUrl(url, replyToken){
     var rq = require("request");
@@ -282,7 +283,7 @@ function shortenUrl(url, replyToken){
     });
 }
 
-/// 統一發票
+// 統一發票
 
 function TWticket(replyToken) {
     
@@ -312,6 +313,37 @@ function TWticket(replyToken) {
         console.log(err);
     });
 }
+
+function Constellation(index, replyToken) {
+    var today = new Date().toISOString().substring(0, 10);
+    var options = {
+        uri: 'http://astro.click108.com.tw/daily_' + index + '.php?iAcDay=' + today + '&iAstro=' + index,
+        transform: function (body) {
+            return cheerio.load(body);
+        }
+    };
+    rp(options).then(function ($) {
+        var fax = $(".TODAY_CONTENT")[0]
+        
+        var s = 
+        fax.children[1].children[0].data + '\n' +
+        fax.children[3].children[0].children[0].data + '\n' +
+        fax.children[4].children[0].data + '\n' +
+        fax.children[6].children[0].children[0].data + '\n' +
+        fax.children[7].children[0].data + '\n' +
+        fax.children[9].children[0].children[0].data + '\n' +
+        fax.children[10].children[0].data + '\n' +
+        fax.children[12].children[0].children[0].data + '\n' +
+        fax.children[13].children[0].data;
+        
+        replyMsgToLine(outType, replyToken, s);
+    })
+    .catch(function (err) {
+        console.log("Fail to get data.");
+    });
+}
+
+//// request functions end ////
 
 
 ////////////////////////////////////////
@@ -355,41 +387,12 @@ function Luck(str, replyToken) {
     }));
     
     if(index>-1){
+        // call request
         Constellation(index, replyToken);
     }else{
         return str + ' ： ' + randomReturn.text.luck.getRandom();
     }
 }
-
-function Constellation(index, replyToken) {
-    var today = new Date().toISOString().substring(0, 10);
-    var options = {
-        uri: 'http://astro.click108.com.tw/daily_' + index + '.php?iAcDay=' + today + '&iAstro=' + index,
-        transform: function (body) {
-            return cheerio.load(body);
-        }
-    };
-    rp(options).then(function ($) {
-        var fax = $(".TODAY_CONTENT")[0]
-        
-        var s = 
-        fax.children[1].children[0].data + '\n' +
-        fax.children[3].children[0].children[0].data + '\n' +
-        fax.children[4].children[0].data + '\n' +
-        fax.children[6].children[0].children[0].data + '\n' +
-        fax.children[7].children[0].data + '\n' +
-        fax.children[9].children[0].children[0].data + '\n' +
-        fax.children[10].children[0].data + '\n' +
-        fax.children[12].children[0].children[0].data + '\n' +
-        fax.children[13].children[0].data;
-        
-        replyMsgToLine(outType, replyToken, s);
-    })
-    .catch(function (err) {
-        console.log("Fail to get data.");
-    });
-}
-
 
 ////////////////////////////////////////
 //////////////// Others
@@ -427,6 +430,7 @@ function choice(input, str) {
     return str[0] + '[' + a + '] → ' + a[Math.floor((Math.random() * (a.length + 0)))];
 }
 
+// 組url
 function GetUrl(url, data) {
     if (data != "" && typeof data != "undefined") {
         var keys = Object.keys(data);
