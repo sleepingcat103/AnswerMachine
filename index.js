@@ -204,10 +204,10 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger.match(/立flag|死亡flag/) != null) {
         return randomReturn.text.flag.getRandom();
     }    
-    else if (trigger == '!貓咪', '！貓咪') {
+    else if (IsKeyWord(trigger, ['!貓咪', '！貓咪'])) {
         return MeowHelp();
     }
-    else if (trigger == '!help', '！help', '！ｈｅｌｐ', '！Ｈｅｌｐ', '！ＨＥＬＰ') {
+    else if (IsKeyWord(trigger, ['!help', '！help', '！ｈｅｌｐ', '！Ｈｅｌｐ', '！ＨＥＬＰ'])) {
         return Help();
     }
     else if (trigger.match(/排序|排列/) != null && mainMsg.length >= 3) {
@@ -386,11 +386,11 @@ function Luck(str, replyToken) {
         if(element.indexOf(target)>-1) return element;
     }));
     
-    if(index>-1){
+    if(index < 0){
+        return str + ' ： ' + randomReturn.text.luck.getRandom();
+    }else{
         // call request
         Constellation(index, replyToken);
-    }else{
-        return str + ' ： ' + randomReturn.text.luck.getRandom();
     }
 }
 
