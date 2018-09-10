@@ -49,8 +49,11 @@ app.post('/', jsonParser, function (req, res) {
         }
         catch (e) {
             console.log('catch error');
-        console.log(e.toString());
+            console.log(e.toString());
         }
+    }else if(event.message.type == 'location'){
+        console.log('Position: ' + event.message.latitude +', ' + event.message.longitude);
+        console.log('          ' + event.message.address);
     }
     
     if (rplyVal) {
