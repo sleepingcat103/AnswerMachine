@@ -24,8 +24,8 @@ app.get('/', function (req, res) {
 });
 
 app.post('/', jsonParser, function (req, res) {
+    try{
     event = req.body.events[0];
-    console.log('gid: ' + event.source.groupId);
     let type = event.type;
     
     let rplyToken = event.replyToken;
@@ -49,6 +49,7 @@ app.post('/', jsonParser, function (req, res) {
     }
 
     res.send('ok');
+    }catch(e){console.log(e);}
 });
 
 app.listen(app.get('port'), function () {
