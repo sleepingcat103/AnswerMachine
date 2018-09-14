@@ -633,7 +633,7 @@ var PunchCard = function() {
             })
         }
         else{
-            console.log('Punch error: Not punch time');
+            console.log('Punch error: Not punch time', date, hour + '點', '(' + day + ')');
         }
     }
 
