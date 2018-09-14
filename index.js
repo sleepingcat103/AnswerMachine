@@ -145,7 +145,6 @@ function setOptions() {
 ////////////////////////////////////////
 function parseInput(rplyToken, inputStr) {
 
-    console.log('InputStr: ' + inputStr);
     _isNaN = function (obj) {
         return isNaN(parseInt(obj));
     }
