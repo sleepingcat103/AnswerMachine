@@ -4,9 +4,12 @@ var https = require('https');
 var app = express();
 var cheerio = require("cheerio");
 var rp = require('request-promise');
+var request = require('request');
+var parser = require('xml2json-light');
 var randomReturn = require('./RandomReturn.json');
 var ChannelAccessKey = 'K/RiRP/j8wUy6ZrXuK7NhKaCoNb3mLkapNu82aPsJpLFsjH654+RFDpikiU6msO1hWzXbh2SMD25XEpsq+vsyeLatSz2ZXU6cm39YFyRLoAvrf/HYivzuKN9/UTeSqJypwEj5i6x/VHrSjIirK47ogdB04t89/1O/w1cDnyilFU=';
- 
+var GeocodingKey = 'AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s';
+
 var jsonParser = bodyParser.json();
 
 var outType = 'text';
@@ -22,6 +25,7 @@ app.get('/', function (req, res) {
 
 app.post('/', jsonParser, function (req, res) {
     event = req.body.events[0];
+    console.log('gid: ' + event.source.groupId);
     let type = event.type;
     
     let rplyToken = event.replyToken;
@@ -55,8 +59,20 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
 
     let rplyObj;
     
+    // push
+    if (outType == 'push') {
+        v_path = '/v2/bot/message/push';
+        rplyObj = {
+            to: rplyToken,
+            messages: [{
+                type: "text",
+                text: rplyVal
+            }]
+        }
+    }
+	
     //圖片回復
-    if (outType == 'image') {
+    else if (outType == 'image') {
         //v_path = '/v2/bot/message/reply';
         rplyObj = {
             replyToken: rplyToken,
@@ -71,14 +87,14 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
     } 
     
     //貼圖
-	else if (outType == 'sticker') {
+    else if (outType == 'sticker') {
         //v_path = '/v2/bot/message/reply';
         rplyObj = {
             replyToken: rplyToken,
             messages: [rplyVal]
         }
     }
-	
+    
     //普通文字訊息
     else {
         //v_path = '/v2/bot/message/reply';
@@ -162,28 +178,28 @@ function parseInput(rplyToken, inputStr) {
         googleSrarch(inputStr.substring(inputStr.indexOf(' ')+1, replyToken));
     }
 
-	// 日幣
+    // 日幣
     else if (IsKeyWord(trigger, ['!jp', '!日幣','！jp', '！日幣', '！ＪＰ', '！ｊｐ'])) {
         JP(rplyToken);
     }
 
-	//貼圖
+    //貼圖
     else if(IsKeyWord(trigger, ['打架', '互相傷害r', '來互相傷害', '來互相傷害r'])){
         return Sticker("2", "517");
     }
-	
+    
     else if(IsKeyWord(trigger,['幫QQ', '哭哭', 'QQ'])){
         return Sticker("1", "9");
     }
-	
+    
     else if(trigger == '<3'){
         return Sticker("1", "410");
     }
-	
+    
     else if(trigger == '招財貓'){
         return Sticker("4", "607");
     }
-	
+    
     else if(IsKeyWord(trigger, ['好冷', '很冷', '冷爆啦', '冷死'])){
         return Sticker("2", "29");
     }
@@ -351,13 +367,13 @@ function Constellation(index, replyToken) {
 //////////////// stickers
 ////////////////////////////////////////
 function Sticker(package, sticker){
-	outType = 'sticker';
-	var stk = {
-	    type: "sticker",
-	    packageId: package,
-	    stickerId: sticker
-	};
-	return stk;
+    outType = 'sticker';
+    var stk = {
+        type: "sticker",
+        packageId: package,
+        stickerId: sticker
+    };
+    return stk;
 }
 
 ////////////////////////////////////////
@@ -450,10 +466,10 @@ function IsKeyWord(target, strs){
     if(target==null||strs==null){
         return false;
     }
-	
+    
     if(target == strs)
-	return true;
-	
+    return true;
+    
     for(i=0; i<strs.length; i++){
         if(target == strs[i]){
             return true;
@@ -497,6 +513,157 @@ function Help() {
 function MeowHelp() {
     return randomReturn.text.meow.getRandom() + '\n要做什麼喵?\n\n(輸入 !help 以獲得使用說明)';
 }
+
+//// 打卡test
+
+var PunchCard = function() {
+
+    var needPunchedIn = true;
+
+    var d, utc, today, date, hour, day;
+
+    var require('./dates.json');
+
+    var card = {
+        key: '',
+        groupUBINo: "20939790",
+        companyID: "1",
+        account: "10506006",
+        language: "zh-tw",
+        longitude: "",
+        latitude: "",
+        address: "",
+        memo: "",
+        mobile_info: ""
+    };
+
+    var doInit = function(){
+
+        d = new Date();
+        utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+        today = new Date(utc + (3600000*8));
+        date = today.getFullYear()+'/'+(today.getMonth()+1)+'/'+today.getDate();
+        hour = today.getHours();
+        day = today.getDay();
+    };
+
+    var doValidate = function(){
+        needPunchedIn = function(){
+            if(setting.ReturnDays.includes(date)){
+                return true;
+            }
+            else if(day == 6 || day == 0){
+                return false;
+            }
+            else if(setting.Holidays.includes(date)){
+                return false;
+            }else{
+                return true;
+            }
+        };
+        if(needPunchedIn()){
+            if(hour == 8||hour == 9||hour == 18||hour == 19){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+
+    var doPunchIn = function(work){
+        if(work){
+		
+            // 抓session key
+            request.post({
+                url: "https://workflow.pershing.com.tw/WFMobileWeb/Service/eHRFlowMobileService.asmx/Login",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: GetUrlEncodeJson({
+                    groupUBINo: 20939790,
+                    companyID: 1,
+                    account: "10506006",
+                    password: "gs15031240"})
+            },function(error, response, body){
+                try{
+                    var data = parser.xml2json(body);
+                    if(data.FunctionExecResult.IsSuccess){
+                        card.key = data.FunctionExecResult.ReturnObject["_@ttribute"];
+                        card.latitude = '25.06' + Math.floor((Math.random() * 11000 + 24000));
+                        card.longitude = '121.5' + Math.floor((Math.random() * 30000) + 170000);
+			    
+                        // 抓地址
+                        request.post({
+                            url: "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + card.latitude + "," + card.longitude + "&language=zh-TW&key=" +GeocodingKey
+                        },function(error, response, body){
+                            try{
+                                var result = JSON.parse(body);
+                                card.address = result.results[0].formatted_address;
+                
+                                request.post({
+                                    url: "https://workflow.pershing.com.tw/WFMobileWeb/Service/eHRFlowMobileService.asmx/InsertCardData",
+                                    headers: {
+                                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                                        "X-Requested-With": "XMLHttpRequest"
+                                    },
+                                    body: encodeURI(GetUrlEncodeJson(c))
+                                },function(error, response, body){
+                                    try{
+                                        var data = parser.xml2json(body);
+                                        console.log(data.FunctionExecResult.ReturnMessage);
+					// replyMsgToLine('push', 'GID', data.FunctionExecResult.ReturnMessage);
+                                    }catch(e){
+                                        console.log("Punch error: "+e);
+                                    }
+                                })
+                            }catch(e){
+                                console.log("Punch error: "+e);
+                            }
+                        })
+                    }
+                }catch(e){
+                    console.log("Punch error: "+e);
+                }
+            })
+        }
+        else{
+            console.log('Punch error: Not punch time');
+        }
+    }
+
+    return {
+        Init: function(){
+            doInit();
+        },
+        TrytoPunchIn: function(){
+            var _self = this;
+            doPunchIn(doValidate());
+            setTimeout(function(){ 
+                _self.TrytoPunchIn();
+            }, 3600000);
+        },
+        PunchIn: function(){
+            doPunchIn(true);
+        }
+    }
+}();
+
+function GetUrlEncodeJson(data) {
+    var str = '';
+    if (data != "" && typeof data != "undefined") {
+        var keys = Object.keys(data);
+        for (var i = 0; i < keys.length; i++) {
+            var dataName = keys[i];
+            if (data.hasOwnProperty(dataName)) {
+                str += (i == 0) ? "" : "&";
+                str += dataName + "=" + data[dataName];
+            }
+        }
+    }
+    return str;
+}
+
 
 ////////////////////////////////////////
 ////////////////prototype
