@@ -539,7 +539,7 @@ var PunchCard = function() {
     };
 
     var doInit = function(){
-
+	console.log('Punch: doInit');
         d = new Date();
         utc = d.getTime() + (d.getTimezoneOffset() * 60000);
         today = new Date(utc + (3600000*8));
@@ -549,6 +549,7 @@ var PunchCard = function() {
     };
 
     var doValidate = function(){
+	console.log('Punch: doValidate');
         needPunchedIn = function(){
             if(setting.ReturnDays.includes(date)){
                 return true;
@@ -572,8 +573,9 @@ var PunchCard = function() {
     }
 
     var doPunchIn = function(work){
+	console.log('Punch: doPunchIn');
+	    
         if(work){
-		
             // 抓session key
             request.post({
                 url: "https://workflow.pershing.com.tw/WFMobileWeb/Service/eHRFlowMobileService.asmx/Login",
@@ -615,16 +617,19 @@ var PunchCard = function() {
                                         console.log(data.FunctionExecResult.ReturnMessage);
 					replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', data.FunctionExecResult.ReturnMessage);
                                     }catch(e){
-                                        replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', '打卡失敗(打卡): ' + e);
+                                        replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', '打卡失敗(打卡)');
+					    console.log('Punch error: ' + e);
                                     }
                                 })
                             }catch(e){
-                                 replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', '打卡失敗(地址): ' + e);
+                                 replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', '打卡失敗(地址)');
+				    console.log('Punch error: ' + e);
                             }
                         })
                     }
                 }catch(e){
-                    replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', '打卡失敗(登入): ' + e);
+                    replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', '打卡失敗(登入)');
+			console.log('Punch error: ' + e);
                 }
             })
         }
