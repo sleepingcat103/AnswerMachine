@@ -522,7 +522,7 @@ var PunchCard = function() {
 
     var d, utc, today, date, hour, day;
 
-    var require('./dates.json');
+    var setting = require('./dates.json');
 
     var card = {
         key: '',
