@@ -7,7 +7,7 @@ var rp = require('request-promise');
 var request = require('request');
 var parser = require('xml2json-light');
 var randomReturn = require('./RandomReturn.json');
-var ChannelAccessKey = 'K/RiRP/j8wUy6ZrXuK7NhKaCoNb3mLkapNu82aPsJpLFsjH654+RFDpikiU6msO1hWzXbh2SMD25XEpsq+vsyeLatSz2ZXU6cm39YFyRLoAvrf/HYivzuKN9/UTeSqJypwEj5i6x/VHrSjIirK47ogdB04t89/1O/w1cDnyilFU=';
+var ChannelAccessKey = 'actVI2pGSgmQ+JYuF2il02qMYH+1+3Q6pvaTjjL4J77uWSuVRoTZnloLqZG39jxfuZAWyS77LfHuQ9rHx4vupzxq3sDLKcwRraRq0F0t9B8aULHlhuO2BYmiIvOFjT6Vs+RFkd3GDQnNB2Ykvo6rlgdB04t89/1O/w1cDnyilFU=';
 var GeocodingKey = 'AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s';
 
 var jsonParser = bodyParser.json();
@@ -29,7 +29,6 @@ app.post('/', jsonParser, function (req, res) {
     let type = event.type;
     
     let rplyToken = event.replyToken;
-	    console.log('rplyToken: ' + rplyToken );
     let rplyVal = null;
     
     outType = 'text';
@@ -111,7 +110,7 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
             ]
         }
     }
-    console.log('rplyObj: ' + JSON.stringify(rplyObj) );
+
     let rplyJson = JSON.stringify(rplyObj);
     var options = setOptions();
     var request = https.request(options, function (response) {
