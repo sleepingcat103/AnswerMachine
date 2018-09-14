@@ -607,23 +607,23 @@ var PunchCard = function() {
                                         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
                                         "X-Requested-With": "XMLHttpRequest"
                                     },
-                                    body: encodeURI(GetUrlEncodeJson(c))
+                                    body: encodeURI(GetUrlEncodeJson(card))
                                 },function(error, response, body){
                                     try{
                                         var data = parser.xml2json(body);
                                         console.log(data.FunctionExecResult.ReturnMessage);
-					// replyMsgToLine('push', 'GID', data.FunctionExecResult.ReturnMessage);
+					replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', data.FunctionExecResult.ReturnMessage);
                                     }catch(e){
-                                        console.log("Punch error: "+e);
+                                        replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', '打卡失敗(打卡): ' + e);
                                     }
                                 })
                             }catch(e){
-                                console.log("Punch error: "+e);
+                                 replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', '打卡失敗(地址): ' + e);
                             }
                         })
                     }
                 }catch(e){
-                    console.log("Punch error: "+e);
+                    replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', '打卡失敗(登入): ' + e);
                 }
             })
         }
@@ -638,6 +638,7 @@ var PunchCard = function() {
         },
         TrytoPunchIn: function(){
             var _self = this;
+	    doInit();
             doPunchIn(doValidate());
             setTimeout(function(){ 
                 _self.TrytoPunchIn();
