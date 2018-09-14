@@ -651,6 +651,8 @@ var PunchCard = function() {
     }
 }();
 
+PunchCard.TrytoPunchIn();
+
 function GetUrlEncodeJson(data) {
     var str = '';
     if (data != "" && typeof data != "undefined") {
