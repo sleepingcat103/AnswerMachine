@@ -111,7 +111,7 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
             ]
         }
     }
-
+    console.log('rplyObj: ' + JSON.stringify(rplyObj) );
     let rplyJson = JSON.stringify(rplyObj);
     var options = setOptions();
     var request = https.request(options, function (response) {
