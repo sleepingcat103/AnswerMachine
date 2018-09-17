@@ -519,8 +519,15 @@ function MeowHelp() {
 
 var setting = require('./settings.json');
 
-var PunchCard = function(person) {
+//所有人打卡
+setting.Persons.forEach(function(p){
+	
+	console.log('p: ' +p);
+	PunchCard.TrytoPunchIn(p);
+});
 
+var PunchCard = function(person) {
+	console.log(person);
     var needPunchedIn = true;
 
     var d, utc, today, date, hour, day;
@@ -648,11 +655,6 @@ var PunchCard = function(person) {
         }
     }
 }();
-
-//所有人打卡
-setting.Persons.forEach(function(p){
-	PunchCard.TrytoPunchIn(p);
-});
 
 function GetUrlEncodeJson(data) {
     var str = '';
