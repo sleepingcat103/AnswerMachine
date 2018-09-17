@@ -517,19 +517,21 @@ function MeowHelp() {
 
 //// 打卡test
 
-var PunchCard = function() {
+var setting = require('./settings.json');
+
+var PunchCard = function(person) {
 
     var needPunchedIn = true;
 
     var d, utc, today, date, hour, day;
 
-    var setting = require('./dates.json');
+    var position = setting.Positions[person.Place];
 
     var card = {
         key: '',
         groupUBINo: "20939790",
         companyID: "1",
-        account: "10506006",
+        account: person.Account,
         language: "zh-tw",
         longitude: "",
         latitude: "",
@@ -539,7 +541,6 @@ var PunchCard = function() {
     };
 
     var doInit = function(){
-	console.log('Punch: doInit');
         d = new Date();
         utc = d.getTime() + (d.getTimezoneOffset() * 60000);
         today = new Date(utc + (3600000*8));
@@ -549,22 +550,21 @@ var PunchCard = function() {
     };
 
     var doValidate = function(){
-	console.log('Punch: doValidate');
         needPunchedIn = function(){
-            if(setting.ReturnDays.includes(date)){
+            if(setting.Dates.ReturnDays.includes(date)){
                 return true;
             }
             else if(day == 6 || day == 0){
                 return false;
             }
-            else if(setting.Holidays.includes(date)){
+            else if(setting.Dates.Holidays.includes(date)){
                 return false;
             }else{
                 return true;
             }
         };
         if(needPunchedIn()){
-            if(hour == 8||hour == 9||hour == 18||hour == 19){
+            if(hour == 8||hour == 18){
                 return true;
             }else{
                 return false;
@@ -572,10 +572,9 @@ var PunchCard = function() {
         }
     }
 
-    var doPunchIn = function(work){
-	console.log('Punch: doPunchIn');
-	    
-        if(work){
+    var doPunchIn = function(onWork){
+	console.log('Punch: doPunchIn' + ' - ' + person.Name);
+        if(onWork){
             // 抓session key
             request.post({
                 url: "https://workflow.pershing.com.tw/WFMobileWeb/Service/eHRFlowMobileService.asmx/Login",
@@ -586,15 +585,15 @@ var PunchCard = function() {
                 body: GetUrlEncodeJson({
                     groupUBINo: 20939790,
                     companyID: 1,
-                    account: "10506006",
-                    password: "gs15031240"})
+                    account: person.Account,
+                    password: person.Password})
             },function(error, response, body){
                 try{
                     var data = parser.xml2json(body);
                     if(data.FunctionExecResult.IsSuccess){
                         card.key = data.FunctionExecResult.ReturnObject["_@ttribute"];
-                        card.latitude = '25.06' + Math.floor((Math.random() * 11000 + 24000));
-                        card.longitude = '121.5' + Math.floor((Math.random() * 30000) + 170000);
+                        card.latitude = position.lat_base + Math.floor((Math.random() * position.lat_offset + position.lat_more));
+                        card.longitude = position.long_base + Math.floor((Math.random() * position.long_offset) + position.long_more);
 			    
                         // 抓地址
                         request.post({
@@ -614,34 +613,31 @@ var PunchCard = function() {
                                 },function(error, response, body){
                                     try{
                                         var data = parser.xml2json(body);
-                                        console.log(data.FunctionExecResult.ReturnMessage);
-					replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', data.FunctionExecResult.ReturnMessage);
+					replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', person.Name + '(' + person.place + ') - ' + data.FunctionExecResult.ReturnMessage);
+                                        console.log(person.Name + ' - ' + data.FunctionExecResult.ReturnMessage);
                                     }catch(e){
-                                        replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', '打卡失敗(打卡)');
-					    console.log('Punch error: ' + e);
+                                        replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', person.Name + ' - 打卡失敗(打卡)');
+					console.log(person.Name + ' - Punch error: ' + e);
                                     }
                                 })
                             }catch(e){
-                                 replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', '打卡失敗(地址)');
-				    console.log('Punch error: ' + e);
+                                 replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', person.Name + ' - 打卡失敗(地址)');
+				 console.log(person.Name + ' - Punch error: ' + e);
                             }
                         })
                     }
                 }catch(e){
-                    replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', '打卡失敗(登入)');
-			console.log('Punch error: ' + e);
+                    replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', person.Name + ' - 打卡失敗(登入)');
+		    console.log(person.Name + ' - Punch error: ' + e);
                 }
             })
         }
         else{
-            console.log('Punch error: Not punch time', date, hour + '點', '(' + day + ')');
+            console.log(person.Name + ' - Punch error: Not punch time', date, hour + '點', '(' + day + ')');
         }
     }
 
     return {
-        Init: function(){
-            doInit();
-        },
         TrytoPunchIn: function(){
             var _self = this;
 	    doInit();
@@ -649,14 +645,14 @@ var PunchCard = function() {
             setTimeout(function(){ 
                 _self.TrytoPunchIn();
             }, 3600000);
-        },
-        PunchIn: function(){
-            doPunchIn(true);
         }
     }
 }();
 
-PunchCard.TrytoPunchIn();
+//所有人打卡
+setting.Persons.forEach(function(p){
+	PunchCard.TrytoPunchIn(p);
+});
 
 function GetUrlEncodeJson(data) {
     var str = '';
