@@ -519,26 +519,16 @@ function MeowHelp() {
 
 var setting = require('./settings.json');
 
-//所有人打卡
-setting.Persons.forEach(function(p){
-	
-	console.log('p: ' +p);
-	PunchCard.TrytoPunchIn(p);
-});
-
-var PunchCard = function(person) {
-	console.log(person);
+var PunchCard = function() {
     var needPunchedIn = true;
 
     var d, utc, today, date, hour, day;
-
-    var position = setting.Positions[person.Place];
 
     var card = {
         key: '',
         groupUBINo: "20939790",
         companyID: "1",
-        account: person.Account,
+        account: "",
         language: "zh-tw",
         longitude: "",
         latitude: "",
@@ -579,8 +569,12 @@ var PunchCard = function(person) {
         }
     }
 
-    var doPunchIn = function(onWork){
+    var doPunchIn = function(onWork, person){
+	    
+        console.log('person: ' + person);
 	console.log('Punch: doPunchIn' + ' - ' + person.Name);
+	var position = setting.Positions[person.Place];
+	    
         if(onWork){
             // 抓session key
             request.post({
@@ -599,6 +593,7 @@ var PunchCard = function(person) {
                     var data = parser.xml2json(body);
                     if(data.FunctionExecResult.IsSuccess){
                         card.key = data.FunctionExecResult.ReturnObject["_@ttribute"];
+			card.account = person.Account;
                         card.latitude = position.lat_base + Math.floor((Math.random() * position.lat_offset + position.lat_more));
                         card.longitude = position.long_base + Math.floor((Math.random() * position.long_offset) + position.long_more);
 			    
@@ -645,16 +640,23 @@ var PunchCard = function(person) {
     }
 
     return {
-        TrytoPunchIn: function(){
+        TrytoPunchIn: function(p){
             var _self = this;
 	    doInit();
-            doPunchIn(doValidate());
+            doPunchIn(doValidate(), p);
             setTimeout(function(){ 
-                _self.TrytoPunchIn();
+                _self.TrytoPunchIn(p);
             }, 3600000);
         }
     }
 }();
+
+//所有人打卡
+setting.Persons.forEach(function(p){
+	
+    console.log('p: ' +p);
+    PunchCard.TrytoPunchIn(p);
+});
 
 function GetUrlEncodeJson(data) {
     var str = '';
