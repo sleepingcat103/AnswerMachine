@@ -614,7 +614,7 @@ var PunchCard = function() {
                                 },function(error, response, body){
                                     try{
                                         var data = parser.xml2json(body);
-					replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', person.Name + '(' + person.place + ') - ' + data.FunctionExecResult.ReturnMessage);
+					replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', person.Name + '(' + person.Place + ') - ' + data.FunctionExecResult.ReturnMessage);
                                         console.log(person.Name + ' - ' + data.FunctionExecResult.ReturnMessage);
                                     }catch(e){
                                         replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', person.Name + ' - 打卡失敗(打卡)');
