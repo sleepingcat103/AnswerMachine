@@ -571,7 +571,6 @@ var PunchCard = function() {
 
     var doPunchIn = function(onWork, person){
 	    
-        console.log('person: ' + person);
 	console.log('Punch: doPunchIn' + ' - ' + person.Name);
 	var position = setting.Positions[person.Place];
 	    
@@ -653,8 +652,6 @@ var PunchCard = function() {
 
 //所有人打卡
 setting.Persons.forEach(function(p){
-	
-    console.log('p: ' +p);
     PunchCard.TrytoPunchIn(p);
 });
 
