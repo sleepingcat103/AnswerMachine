@@ -1,0 +1,37 @@
+    {
+        "Persons": [
+            {
+                "Name": "方翊宸",
+                "Account": "10506006",
+                "Password": "gs15031240",
+                "Place": "MGB"
+            }
+        ],
+        "Dates": {
+            "Holidays": [
+                "2018/9/24",  
+                "2018/10/10", 
+                "2018/12/31", 
+                "2019/1/1"    
+            ],
+            "ReturnDays": []
+        },
+        "Positions": {
+            "BOT": {
+                "lat_base": "25.06",
+                "long_base": "121.5",
+                "lat_offset": 11000,
+                "long_offset": 30000,
+                "lat_more": 24000,
+                "long_more": 170000
+            },
+            "MGB": {
+                "lat_base": "25.0",
+                "long_base": "121.5",
+                "lat_offset": 11000,
+                "long_offset": 30000,
+                "lat_more": 500000,
+                "long_more": 800000
+            }
+        }
+    }
