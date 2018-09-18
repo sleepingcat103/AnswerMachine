@@ -144,7 +144,7 @@ function setOptions() {
 ////////////////////////////////////////
 //////////////// 分析開始 //////////////
 ////////////////////////////////////////
-function parseInput(rplyToken, inputStr) {
+function parseInput(replyToken, inputStr) {
 
     _isNaN = function (obj) {
         return isNaN(parseInt(obj));
@@ -166,7 +166,7 @@ function parseInput(rplyToken, inputStr) {
     
     // 發票
     else if (IsKeyWord(trigger, ['統一發票', '發票']) && mainMsg.length == 1) {
-        return TWticket(rplyToken);
+        return TWticket(replyToken);
     }
 
     // 縮網址
@@ -176,12 +176,12 @@ function parseInput(rplyToken, inputStr) {
     
     // google search
     else if(IsKeyWord(trigger, ['google', '搜尋', '尋找']) && mainMsg.length > 1){
-        googleSrarch(inputStr.substring(inputStr.indexOf(' ')+1, replyToken));
+        googleSearch(inputStr.substring(inputStr.indexOf(' ')+1, replyToken));
     }
 
     // 日幣
     else if (IsKeyWord(trigger, ['!jp', '!日幣','！jp', '！日幣', '！ＪＰ', '！ｊｐ'])) {
-        JP(rplyToken);
+        JP(replyToken);
     }
 
     //貼圖
@@ -217,7 +217,7 @@ function parseInput(rplyToken, inputStr) {
     
     //一般功能
     else if (trigger.match(/運氣|運勢/) != null) {
-        return Luck(mainMsg[0], rplyToken); //各種運氣
+        return Luck(mainMsg[0], replyToken); //各種運氣
     }
     else if (trigger.match(/立flag|死亡flag/) != null) {
         return randomReturn.text.flag.getRandom();
@@ -262,7 +262,7 @@ function JP(replyToken) {
 
 // google search
 
-function googleSrarch(str, replyToken){
+function googleSearch(str, replyToken){
         
     let s = GetUrl('https://www.google.com.tw/search', {
         q: str
