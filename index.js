@@ -58,7 +58,6 @@ app.listen(app.get('port'), function () {
 
 function replyMsgToLine(outType, rplyToken, rplyVal) {
 
-    console.log('rplyToken: ' + rplyToken);
     let rplyObj;
     
     // push
@@ -263,7 +262,6 @@ function JP(replyToken) {
 // google search
 
 function googleSearch(str, rplyToken){
-        console.log('googleSearch!',rplyToken);
     let s = GetUrl('https://www.google.com.tw/search', {
         q: str
     });
