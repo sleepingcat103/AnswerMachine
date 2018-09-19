@@ -29,6 +29,7 @@ app.post('/', jsonParser, function (req, res) {
     let type = event.type;
     
     let rplyToken = event.replyToken;
+    console.log('event.replyToken: ' + rplyToken);
     let rplyVal = null;
     
     outType = 'text';
@@ -58,7 +59,7 @@ app.listen(app.get('port'), function () {
 
 function replyMsgToLine(outType, rplyToken, rplyVal) {
 
-	    console.log('rplyToken: ' + rplyToken );
+    console.log('rplyToken: ' + rplyToken);
     let rplyObj;
     
     // push
