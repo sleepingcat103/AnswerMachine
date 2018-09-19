@@ -144,7 +144,7 @@ function setOptions() {
 ////////////////////////////////////////
 //////////////// 分析開始 //////////////
 ////////////////////////////////////////
-function parseInput(replyToken, inputStr) {
+function parseInput(rplyToken, inputStr) {
 
     _isNaN = function (obj) {
         return isNaN(parseInt(obj));
@@ -166,22 +166,22 @@ function parseInput(replyToken, inputStr) {
     
     // 發票
     else if (IsKeyWord(trigger, ['統一發票', '發票']) && mainMsg.length == 1) {
-        return TWticket(replyToken);
+        return TWticket(rplyToken);
     }
 
     // 縮網址
     else if (trigger == 'shorten' && mainMsg.length > 1) {
-        shortenUrl(inputStr.substring(inputStr.indexOf(' ')+1), replyToken);
+        shortenUrl(inputStr.substring(inputStr.indexOf(' ')+1), rplyToken);
     }
     
     // google search
     else if(IsKeyWord(trigger, ['google', '搜尋', '尋找']) && mainMsg.length > 1){
-        googleSearch(inputStr.substring(inputStr.indexOf(' ')+1, replyToken));
+        googleSearch(inputStr.substring(inputStr.indexOf(' ')+1, rplyToken));
     }
 
     // 日幣
     else if (IsKeyWord(trigger, ['!jp', '!日幣','！jp', '！日幣', '！ＪＰ', '！ｊｐ'])) {
-        JP(replyToken);
+        JP(rplyToken);
     }
 
     //貼圖
@@ -217,7 +217,7 @@ function parseInput(replyToken, inputStr) {
     
     //一般功能
     else if (trigger.match(/運氣|運勢/) != null) {
-        return Luck(mainMsg[0], replyToken); //各種運氣
+        return Luck(mainMsg[0], rplyToken); //各種運氣
     }
     else if (trigger.match(/立flag|死亡flag/) != null) {
         return randomReturn.text.flag.getRandom();
@@ -262,8 +262,8 @@ function JP(replyToken) {
 
 // google search
 
-function googleSearch(str, replyToken){
-        
+function googleSearch(str, rplyToken){
+        console.log(rplyToken)
     let s = GetUrl('https://www.google.com.tw/search', {
         q: str
     });
@@ -278,7 +278,7 @@ function googleSearch(str, replyToken){
             return 'error' + error;
         } else {
             s = body.id;
-            replyMsgToLine(outType, replyToken, s + '\n' + randomReturn.text.google.getRandom());
+            replyMsgToLine(outType, rplyToken, s + '\n' + randomReturn.text.google.getRandom());
         }
     });
 }
