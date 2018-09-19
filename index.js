@@ -145,7 +145,7 @@ function setOptions() {
 //////////////// 分析開始 //////////////
 ////////////////////////////////////////
 function parseInput(rplyToken, inputStr) {
-console.log('parseInput!',rplyToken);
+	
     _isNaN = function (obj) {
         return isNaN(parseInt(obj));
     }
@@ -176,8 +176,7 @@ console.log('parseInput!',rplyToken);
     
     // google search
     else if(IsKeyWord(trigger, ['google', '搜尋', '尋找']) && mainMsg.length > 1){
-	    console.log('google!',rplyToken);
-        googleSearch(inputStr.substring(inputStr.indexOf(' ')+1, rplyToken));
+        googleSearch(inputStr.substring(inputStr.indexOf(' ')+1), rplyToken);
     }
 
     // 日幣
