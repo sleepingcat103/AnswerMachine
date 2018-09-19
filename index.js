@@ -29,7 +29,6 @@ app.post('/', jsonParser, function (req, res) {
     let type = event.type;
     
     let rplyToken = event.replyToken;
-    console.log('event.replyToken: ' + rplyToken);
     let rplyVal = null;
     
     outType = 'text';
@@ -76,7 +75,7 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
 	
     //圖片回復
     else if (outType == 'image') {
-        //v_path = '/v2/bot/message/reply';
+        v_path = '/v2/bot/message/reply';
         rplyObj = {
             replyToken: rplyToken,
             messages: [
@@ -91,7 +90,7 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
     
     //貼圖
     else if (outType == 'sticker') {
-        //v_path = '/v2/bot/message/reply';
+        v_path = '/v2/bot/message/reply';
         rplyObj = {
             replyToken: rplyToken,
             messages: [rplyVal]
@@ -100,7 +99,7 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
     
     //普通文字訊息
     else {
-        //v_path = '/v2/bot/message/reply';
+        v_path = '/v2/bot/message/reply';
         rplyObj = {
             replyToken: rplyToken,
             messages: [
@@ -146,7 +145,7 @@ function setOptions() {
 //////////////// 分析開始 //////////////
 ////////////////////////////////////////
 function parseInput(rplyToken, inputStr) {
-
+console.log('parseInput!',rplyToken);
     _isNaN = function (obj) {
         return isNaN(parseInt(obj));
     }
@@ -177,6 +176,7 @@ function parseInput(rplyToken, inputStr) {
     
     // google search
     else if(IsKeyWord(trigger, ['google', '搜尋', '尋找']) && mainMsg.length > 1){
+	    console.log('google!',rplyToken);
         googleSearch(inputStr.substring(inputStr.indexOf(' ')+1, rplyToken));
     }
 
@@ -264,7 +264,7 @@ function JP(replyToken) {
 // google search
 
 function googleSearch(str, rplyToken){
-        console.log(rplyToken)
+        console.log('googleSearch!',rplyToken);
     let s = GetUrl('https://www.google.com.tw/search', {
         q: str
     });
