@@ -246,10 +246,8 @@ function parseInput(rplyToken, inputStr) {
 //test
 function Book(text, replyToken){
   var Canvas = require('canvas'),
-    { registerFont } = require('canvas');
-  registerFont('kaiu.ttf', {family: 'Kaiu'});
-      
-  var canvas = new Canvas(500, 370, "png"),
+    font = new Canvas.Font('Kaiu', __dirname + '/kaiu.ttf'),
+    canvas = new Canvas(500, 370, "png"),
     ctx = canvas.getContext('2d'),
     fs = require('fs'),
     imgur = require('imgur');
