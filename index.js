@@ -265,7 +265,7 @@ function Book(text, replyToken){
     var strs= new Array();
     strs = text.split("");
 
-    ctx.font = '18px "Kaiu"';
+    ctx.font = '22px "Kaiu"';
     for (i=0;i<strs.length ;i++ ) { 
         ctx.fillText(strs[i],147,(125+(i*16)));
     } 
