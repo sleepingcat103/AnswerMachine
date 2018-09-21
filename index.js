@@ -247,9 +247,12 @@ function parseInput(rplyToken, inputStr) {
 function Book(text, replyToken){
   var Canvas = require('canvas'),
     canvas = new Canvas(500, 370, "png"),
+    font = new Canvas.Font('Kaiu', __dirname + '/kaiu.ttf'),
     ctx = canvas.getContext('2d'),
     fs = require('fs'),
     imgur = require('imgur');
+	
+  ctx.addFont(font);
 
   fs.readFile( __dirname + '/image.png', (err, buf) => {
     if (err) throw err
@@ -262,9 +265,9 @@ function Book(text, replyToken){
     var strs= new Array();
     strs = text.split("");
 
-    ctx.font = '14px "Microsoft YaHei"';
+    ctx.font = '14px "Kaiu"';
     for (i=0;i<strs.length ;i++ ) { 
-        ctx.fillText(strs[i],145,(130+(i*20)));
+        ctx.fillText(strs[i],145,(130+(i*15)));
     } 
 
     ctx.rotate(10*Math.PI/180);
@@ -275,20 +278,11 @@ function Book(text, replyToken){
 
     imgur.uploadFile( __dirname + '/test.jpg')
          .then(function (json) {
-              //console.log(json.data.link);
 	      replyMsgToLine('image', replyToken, json.data.link);
          })
          .catch(function (err) {
                  console.error(err.message);
          });
-    //var pic = '3IEwHG0';
-    //imgur.deleteImage(pic)
-    //.then(function(status) {
-    //    console.log(status);
-    //})
-    //.catch(function(err) {
-    //    console.error(err.message);
-    //});
   })
 }
 
