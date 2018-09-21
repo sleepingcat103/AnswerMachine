@@ -237,12 +237,60 @@ function parseInput(rplyToken, inputStr) {
         return randomReturn.text.meow.getRandom();
     }
     else if (trigger == 'test'){
-        outType = 'image';
-	return __dirname + '/image.png';
+        Test(inputStr.substring(inputStr.indexOf(' ')+1), rplyToken);
     }
 }
 
 //// request functions ////
+
+//test
+function Test(text, replyToken){
+  var Canvas = require('canvas'),
+    canvas = new Canvas(500, 370, "png"),
+    ctx = canvas.getContext('2d'),
+    fs = require('fs'),
+    imgur = require('imgur');
+
+  fs.readFile( __dirname + 'image.png', (err, buf) => {
+    if (err) throw err
+    var img = new Canvas.Image;
+    img.src = buf;
+
+    ctx.drawImage(img, 0, 0, 500, 370);
+    ctx.rotate(-10*Math.PI/180);
+    
+    var strs= new Array();
+    strs = text.split("");
+
+    ctx.font = '14px "標楷體"';
+    for (i=0;i<strs.length ;i++ ) { 
+        ctx.fillText(strs[i],145,(130+(i*20)));
+    } 
+
+    ctx.rotate(10*Math.PI/180);
+
+    fs.writeFileSync("test.jpg", canvas.toBuffer());
+
+    imgur.setClientId('2240b78eb301cbd');
+
+    imgur.uploadFile( __dirname + '/test.jpg')
+         .then(function (json) {
+                console.log(json.data.link);
+         })
+         .catch(function (err) {
+                 console.error(err.message);
+         });
+    //var pic = '3IEwHG0';
+    //imgur.deleteImage(pic)
+    //.then(function(status) {
+    //    console.log(status);
+    //})
+    //.catch(function(err) {
+    //    console.error(err.message);
+    //});
+  })
+}
+
 
 // JP
 function JP(replyToken) {
