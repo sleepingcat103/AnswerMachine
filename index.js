@@ -251,7 +251,7 @@ function Test(text, replyToken){
     fs = require('fs'),
     imgur = require('imgur');
 
-  fs.readFile( __dirname + 'image.png', (err, buf) => {
+  fs.readFile( __dirname + '/image.png', (err, buf) => {
     if (err) throw err
     var img = new Canvas.Image;
     img.src = buf;
