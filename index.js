@@ -274,7 +274,7 @@ function Book(text, replyToken){
 
     fs.writeFileSync("test.jpg", canvas.toBuffer());
 
-    imgur.setClientId('2240b78eb301cbd');
+    imgur.setClientId('59891e0427c16b3');
 
     imgur.uploadFile( __dirname + '/test.jpg')
          .then(function (json) {
