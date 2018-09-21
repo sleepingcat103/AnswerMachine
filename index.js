@@ -246,8 +246,10 @@ function parseInput(rplyToken, inputStr) {
 //test
 function Book(text, replyToken){
   var Canvas = require('canvas'),
-    canvas = new Canvas(500, 370, "png"),
-    font = new Canvas.Font('Kaiu', __dirname + '/kaiu.ttf'),
+    { registerFont } = require('canvas');
+  registerFont('kaiu.ttf', {family: 'Kaiu'});
+      
+  var canvas = new Canvas(500, 370, "png"),
     ctx = canvas.getContext('2d'),
     fs = require('fs'),
     imgur = require('imgur');
@@ -265,7 +267,7 @@ function Book(text, replyToken){
     var strs= new Array();
     strs = text.split("");
 
-    ctx.font = '36px "Kaiu"';
+    ctx.font = '24px "Kaiu"';
     for (i=0;i<strs.length ;i++ ) { 
         ctx.fillText(strs[i],147,(125+(i*16)));
     } 
