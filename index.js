@@ -236,7 +236,7 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger.match(/喵|貓/) != null && meowSwitch) {
         return randomReturn.text.meow.getRandom();
     }
-    else if (trigger == 'test'){
+    else if (trigger == 'test' && mainMsg.length >= 2){
         Test(inputStr.substring(inputStr.indexOf(' ')+1), rplyToken);
     }
 }
@@ -275,7 +275,8 @@ function Test(text, replyToken){
 
     imgur.uploadFile( __dirname + '/test.jpg')
          .then(function (json) {
-                console.log(json.data.link);
+              //console.log(json.data.link);
+	      replyMsgToLine('image', replyToken, json.data.link);
          })
          .catch(function (err) {
                  console.error(err.message);
