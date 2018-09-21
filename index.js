@@ -236,15 +236,15 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger.match(/喵|貓/) != null && meowSwitch) {
         return randomReturn.text.meow.getRandom();
     }
-    else if (trigger == 'test' && mainMsg.length >= 2){
-        Test(inputStr.substring(inputStr.indexOf(' ')+1), rplyToken);
+    else if (trigger == 'book' && mainMsg.length >= 2){
+        Book(inputStr.substring(inputStr.indexOf(' ')+1), rplyToken);
     }
 }
 
 //// request functions ////
 
 //test
-function Test(text, replyToken){
+function Book(text, replyToken){
   var Canvas = require('canvas'),
     canvas = new Canvas(500, 370, "png"),
     ctx = canvas.getContext('2d'),
@@ -262,7 +262,7 @@ function Test(text, replyToken){
     var strs= new Array();
     strs = text.split("");
 
-    ctx.font = '14px "標楷體"';
+    ctx.font = '14px "Microsoft YaHei"';
     for (i=0;i<strs.length ;i++ ) { 
         ctx.fillText(strs[i],145,(130+(i*20)));
     } 
