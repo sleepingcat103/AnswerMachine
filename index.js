@@ -267,6 +267,7 @@ function Book(text, replyToken){
     strs = text.split("");
 
     ctx.font = '24px BrSong';
+    ctx.fillStyle = "#FFFFFF";
     for (i=0;i<strs.length ;i++ ) { 
         ctx.fillText(strs[i],275,(40+(i*16)));
     } 
