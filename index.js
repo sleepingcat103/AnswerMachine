@@ -269,7 +269,7 @@ function Book(text, replyToken){
     ctx.font = '24px bold BrSong';
     ctx.fillStyle = "#FFFFFF";
     for (i=0;i<strs.length ;i++ ) { 
-        ctx.fillText(strs[i],134,(34+(i*36)));
+        ctx.fillText(strs[i],134,(34+(i*30)));
     } 
 
     //ctx.rotate(10*Math.PI/180);
