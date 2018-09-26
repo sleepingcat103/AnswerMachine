@@ -246,7 +246,7 @@ function parseInput(rplyToken, inputStr) {
 //test
 function Book(text, replyToken){
   var Canvas = require('canvas'),
-    font = new Canvas.Font('BrSong', __dirname + '/resource/BrSong.ttf'),
+    font = new Canvas.Font('BrSong', __dirname + '/resource/BrSong.ttc'),
     canvas = new Canvas(348, 293, "png"),
     ctx = canvas.getContext('2d'),
     fs = require('fs'),
