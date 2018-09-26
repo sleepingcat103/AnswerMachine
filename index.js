@@ -236,8 +236,8 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger.match(/喵|貓/) != null && meowSwitch) {
         return randomReturn.text.meow.getRandom();
     }
-    else if (trigger.match(/.jpg/) != null && mainMsg.length == 1){
-        Book(trigger.replace('.jpg',''), rplyToken);
+    else if (trigger.match(/jpg/) != null && mainMsg.length == 1){
+        Book(trigger.replace('jpg',''), rplyToken);
     }
 }
 
