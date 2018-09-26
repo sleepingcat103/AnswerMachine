@@ -46,7 +46,7 @@ app.post('/', jsonParser, function (req, res) {
 
         res.send('ok');
     }catch(e){
-        console.log('catch error: ' + e.toString());
+        console.log('catch error:  ' + e.toString());
     }
 });
 
