@@ -33,15 +33,18 @@ app.post('/', jsonParser, function (req, res) {
     
     outType = 'text';
 
-    try {
-        if (type == 'join' || type == 'follow'){
-            rplyVal = Help();
-        }else if (type == 'message' && event.message.type == 'text') {
-            console.log('InputStr: ' + event.message.text);
-            rplyVal = parseInput(rplyToken, event.message.text);
+
+    if (type == 'message' && msgType == 'text') {
+        try {
+            rplyVal = parseInput(rplyToken, msg);
         }
-    }catch (e) {
-        console.log('catch error: ' + e.toString());
+        catch (e) {
+            console.log('catch error');
+            console.log(e.toString());
+        }
+    }else if(event.message.type == 'location'){
+        console.log('Position: ' + event.message.latitude +', ' + event.message.longitude);
+        console.log('          ' + event.message.address);
     }
     
     if (rplyVal) {
