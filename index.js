@@ -247,7 +247,7 @@ function parseInput(rplyToken, inputStr) {
 function Book(text, replyToken){
   var Canvas = require('canvas'),
     font = new Canvas.Font('BrSong', __dirname + '/resource/BrSong.ttc'),
-    canvas = new Canvas(134, 147, "png"),
+    canvas = new Canvas(174, 147, "png"),
     ctx = canvas.getContext('2d'),
     fs = require('fs'),
     imgur = require('imgur');
@@ -259,7 +259,7 @@ function Book(text, replyToken){
     var img = new Canvas.Image;
     img.src = buf;
 
-    ctx.drawImage(img, 0, 0, 134, 147);
+    ctx.drawImage(img, 0, 0, 174, 147);
     //ctx.drawImage(img, 0, 0, 500, 370);
     //ctx.rotate(-10*Math.PI/180);
     
