@@ -247,7 +247,7 @@ function parseInput(rplyToken, inputStr) {
 function Book(text, replyToken){
   var Canvas = require('canvas'),
     font = new Canvas.Font('BrSong', __dirname + '/resource/BrSong.ttc'),
-    canvas = new Canvas(348, 293, "png"),
+    canvas = new Canvas(105, 88, "png"),
     ctx = canvas.getContext('2d'),
     fs = require('fs'),
     imgur = require('imgur');
@@ -259,7 +259,7 @@ function Book(text, replyToken){
     var img = new Canvas.Image;
     img.src = buf;
 
-    ctx.drawImage(img, 0, 0, 348, 293);
+    ctx.drawImage(img, 0, 0, 105, 88);
     //ctx.drawImage(img, 0, 0, 500, 370);
     //ctx.rotate(-10*Math.PI/180);
     
@@ -269,7 +269,7 @@ function Book(text, replyToken){
     ctx.font = '24px BrSong';
     ctx.fillStyle = "#FFFFFF";
     for (i=0;i<strs.length ;i++ ) { 
-        ctx.fillText(strs[i],80,(13+(i*14)));
+        ctx.fillText(strs[i],80,(12+(i*12)));
     } 
 
     //ctx.rotate(10*Math.PI/180);
