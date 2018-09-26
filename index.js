@@ -236,8 +236,8 @@ function parseInput(rplyToken, inputStr) {
     else if (trigger.match(/喵|貓/) != null && meowSwitch) {
         return randomReturn.text.meow.getRandom();
     }
-    else if (trigger == 'book' && mainMsg.length >= 2){
-        Book(inputStr.substring(inputStr.indexOf(' ')+1), rplyToken);
+    else if (trigger.match(/.jpg/) != null && mainMsg.length == 1){
+        Book(trigger.replace('.jpg',''), rplyToken);
     }
 }
 
@@ -246,31 +246,32 @@ function parseInput(rplyToken, inputStr) {
 //test
 function Book(text, replyToken){
   var Canvas = require('canvas'),
-    font = new Canvas.Font('Kaiu', __dirname + '/kaiu.ttf'),
-    canvas = new Canvas(500, 370, "png"),
+    font = new Canvas.Font('BrSong', __dirname + '/source/BrSong.ttf'),
+    canvas = new Canvas(348, 293, "png"),
     ctx = canvas.getContext('2d'),
     fs = require('fs'),
     imgur = require('imgur');
 	
   ctx.addFont(font);
 
-  fs.readFile( __dirname + '/image.png', (err, buf) => {
+  fs.readFile( __dirname + '/source/neta.png', (err, buf) => {
     if (err) throw err
     var img = new Canvas.Image;
     img.src = buf;
 
-    ctx.drawImage(img, 0, 0, 500, 370);
-    ctx.rotate(-10*Math.PI/180);
+    ctx.drawImage(img, 0, 0, 348, 293);
+    //ctx.drawImage(img, 0, 0, 500, 370);
+    //ctx.rotate(-10*Math.PI/180);
     
     var strs= new Array();
     strs = text.split("");
 
-    ctx.font = '24px "Kaiu"';
+    ctx.font = '24px BrSong';
     for (i=0;i<strs.length ;i++ ) { 
-        ctx.fillText(strs[i],147,(125+(i*16)));
+        ctx.fillText(strs[i],275,(40+(i*16)));
     } 
 
-    ctx.rotate(10*Math.PI/180);
+    //ctx.rotate(10*Math.PI/180);
 
     fs.writeFileSync("test.jpg", canvas.toBuffer());
 
