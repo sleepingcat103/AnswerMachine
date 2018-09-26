@@ -266,10 +266,10 @@ function Book(text, replyToken){
     var strs= new Array();
     strs = text.split("");
 
-    ctx.font = '24px bold BrSong';
+    ctx.font = '20px bold BrSong';
     ctx.fillStyle = "#FFFFFF";
     for (i=0;i<strs.length ;i++ ) { 
-        ctx.fillText(strs[i],134,(34+(i*30)));
+        ctx.fillText(strs[i],132,(32+(i*28)));
     } 
 
     //ctx.rotate(10*Math.PI/180);
