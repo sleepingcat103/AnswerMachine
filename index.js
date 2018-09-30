@@ -159,7 +159,7 @@ async function parseInput(inputStr) {
     // }
     try{
         var replyObj = {
-            type: 'test',
+            type: 'text',
             msg: ''
         };
 
@@ -168,8 +168,6 @@ async function parseInput(inputStr) {
         let mainMsg = inputStr.match(msgSplitor); 
         //指定啟動詞在第一個詞，轉小寫方便辨識
         let trigger = mainMsg[0].toString().toLowerCase(); 
-        
-        console.log('trigger: ' + trigger);
         
         if (IsKeyWord(trigger, ['蘿莉控', '!3年', '!三年'])) {
             replyObj.type = 'image';
@@ -193,7 +191,6 @@ async function parseInput(inputStr) {
 
         // 縮網址
         else if (trigger == 'shorten' && mainMsg.length > 1) {
-            //shortenUrl(inputStr.substring(inputStr.indexOf(' ')+1), rplyToken);
             var result = await shortenUrl(inputStr.substring(inputStr.indexOf(' ')+1));
             if(result.IsSuccess){
                 replyObj.msg = result.msg;
@@ -204,7 +201,6 @@ async function parseInput(inputStr) {
         
         // google search
         else if(IsKeyWord(trigger, ['google', '搜尋', '尋找']) && mainMsg.length > 1){
-            //googleSearch(inputStr.substring(inputStr.indexOf(' ')+1), rplyToken);
             var result = await googleSearch(inputStr.substring(inputStr.indexOf(' ')+1));
             if(result.IsSuccess){
                 replyObj.msg = result.msg;
@@ -215,7 +211,6 @@ async function parseInput(inputStr) {
 
         // 日幣
         else if (IsKeyWord(trigger, ['!jp', '!日幣','！jp', '！日幣', '！ＪＰ', '！ｊｐ'])) {
-            //JP(rplyToken);
             var result = await JP();
             if(result.IsSuccess){
                 replyObj.msg = result.msg;
@@ -226,9 +221,9 @@ async function parseInput(inputStr) {
 
         //梗圖
         else if (trigger.match(/jpg/) != null && mainMsg.length == 1){
-            //Book(mainMsg[0].replace('jpg',''), rplyToken);
             var result = await Neta(mainMsg[0].replace('jpg',''));
             if(result.IsSuccess){
+                replyObj.type = 'image';
                 replyObj.msg = result.msg;
             }else{
                 throw result.msg;
@@ -273,7 +268,6 @@ async function parseInput(inputStr) {
         
         //一般功能
         else if (trigger.match(/運氣|運勢/) != null) {
-            //replyObj.msg = Luck(mainMsg[0], rplyToken); 
             var result = await Luck(mainMsg[0]);
             if(result.IsSuccess){
                 replyObj.msg = result.msg;
@@ -305,15 +299,10 @@ async function parseInput(inputStr) {
             replyObj.msg = randomReturn.text.meow.getRandom();
         }
         
-        return new Promise(function(resolve, reject){
-            resolve(replyObj);
-        })
+        return replyObj;
 
     }catch(e){
         console.log('parse inpur error:', e.toString());
-        return new Promise(function(resolve, reject){
-            resolve({});
-        })
     }
 }
 
@@ -588,10 +577,10 @@ function Sticker(package, sticker){
     return msg;
 }
 
-////////////////////////////////////////
-//////////////// Others
-////////////////////////////////////////
 
+/// Others
+
+// 計算當地時間
 // function calcTime(offset) {
 
 //     // 建立現在時間的物件
@@ -658,9 +647,7 @@ function IsKeyWord(target, strs){
     return false;
 }
 
-////////////////////////////////////////
-//////////////// Help
-////////////////////////////////////////
+// Help
 
 function Help() {
     return new Promise(function(resolve, reject){
@@ -687,9 +674,7 @@ function MeowHelp() {
 }
 
 
-////////////////////////////////////////
-////////////////prototype
-////////////////////////////////////////
+///////////// prototype /////////////////
 
 String.prototype.halfToFull = function (flag) {
     //半形轉全形
