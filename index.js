@@ -31,7 +31,6 @@ app.get('/', async function (req, res) {
 
 app.post('/', jsonParser, async function (req, res) {
     try{
-        console.log(req.body)
         event = req.body.events[0];
         var type = event.type;
         
@@ -150,7 +149,7 @@ function setOptions() {
             'Authorization': 'Bearer ' + ChannelAccessKey
         }
     }
-    return options;
+    return option;
 }
 
 // 分析輸入字串
