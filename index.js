@@ -1,52 +1,61 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var https = require('https');
-var app = express();
-var cheerio = require("cheerio");
-var rp = require('request-promise');
-var request = require('request');
-var parser = require('xml2json-light');
-var randomReturn = require('./RandomReturn.json');
+var express = require('express'),
+    bodyParser = require('body-parser'),
+    jsonParser = bodyParser.json(),
+    https = require('https'),
+    app = express();
+    
+var randomReturn = require('./RandomReturn.json'),
+    setting = require('./settings.json'),
+    PunchCard = require('./PunchCard.js'),
+    myFunc = require('./MyFunc.js');
+
 var ChannelAccessKey = 'actVI2pGSgmQ+JYuF2il02qMYH+1+3Q6pvaTjjL4J77uWSuVRoTZnloLqZG39jxfuZAWyS77LfHuQ9rHx4vupzxq3sDLKcwRraRq0F0t9B8aULHlhuO2BYmiIvOFjT6Vs+RFkd3GDQnNB2Ykvo6rlgdB04t89/1O/w1cDnyilFU=';
-var GeocodingKey = 'AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s';
 
-var jsonParser = bodyParser.json();
-
-var outType = 'text';
-var event = '';
-var v_path = '/v2/bot/message/reply';
-var meowSwitch = false;
+var event = '',
+    meowSwitch = false;
 
 app.set('port', (process.env.PORT || 5000));
 
-app.get('/', function (req, res) {
-    res.send('Hello');
+app.get('/', async function (req, res) {
+    res.send();
+
+    setting.Persons.forEach(async function(p){
+        var result = await PunchCard.TrytoPunchIn(p);
+        if(result){
+            replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', result);
+        }
+    });
 });
 
-app.post('/', jsonParser, function (req, res) {
+app.post('/', jsonParser, async function (req, res) {
     try{
         event = req.body.events[0];
-        let type = event.type;
+        var type = event.type;
         
-        let rplyToken = event.replyToken;
-        let rplyVal = null;
+        var replyToken = event.replyToken;
+        var replyObj = null;
         
-        outType = 'text';
-
+        //初次加入給使用說明訊息
         if (type == 'join' || type == 'follow'){
-            rplyVal = Help();
+            var result = await myFunc.Help();
+            if(result.IsSuccess){
+                replyMsgToLine('text', replyToken, result.msg);
+            }else{
+                throw 'Get help content error: ' + e.toString();
+            }
+
+        //目前僅針對文字訊息回覆
         }else if (type == 'message' && event.message.type == 'text') {
-            console.log('InputStr: ' + event.message.text);
-            rplyVal = parseInput(rplyToken, event.message.text);
-        }
-        
-        if (rplyVal) {
-            replyMsgToLine(outType, rplyToken, rplyVal);
+            console.log('InputStr:', event.message.text);
+            replyObj = await parseInput(event.message.text);
+            if(replyObj.msg){
+                replyMsgToLine(replyObj.type, replyToken, replyObj.msg);
+            }
         }
 
-        res.send('ok');
+        res.send();
     }catch(e){
-        console.log('catch error:  ' + e.toString());
+        console.log('post error:', e.toString());
     }
 });
 
@@ -58,6 +67,10 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
 
     let rplyObj;
     
+    // test
+    // console.log('Do reply to line,', outType, rplyToken, rplyVal)
+    // return;
+
     // push
     if (outType == 'push') {
         v_path = '/v2/bot/message/push';
@@ -107,407 +120,223 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
             ]
         }
     }
-
     let rplyJson = JSON.stringify(rplyObj);
     var options = setOptions();
     var request = https.request(options, function (response) {
         console.log('Status: ' + response.statusCode);
-        console.log('Headers: ' + JSON.stringify(response.headers));
+        //console.log('Headers: ' + JSON.stringify(response.headers));
         response.setEncoding('utf8');
         response.on('data', function (body) {
-            console.log(body);
+            console.log('body:', body);
         });
     });
     request.on('error', function (e) {
-        console.log('Request error: ' + e.message);
+        console.log('Request error:', e.message);
     })
     request.end(rplyJson);
 }
 
 function setOptions() {
-    var options = {
+    var option = {
         host: 'api.line.me',
         port: 443,
-        path: v_path,
+        path: '/v2/bot/message/reply',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + ChannelAccessKey
         }
     }
-    return options;
+    return option;
 }
 
-////////////////////////////////////////
-//////////////// 分析開始 //////////////
-////////////////////////////////////////
-function parseInput(rplyToken, inputStr) {
-	
-    _isNaN = function (obj) {
-        return isNaN(parseInt(obj));
-    }
-    let msgSplitor = (/\S+/ig);
-    let mainMsg = inputStr.match(msgSplitor); //定義輸入字串
-    let trigger = mainMsg[0].toString().toLowerCase(); //指定啟動詞在第一個詞，轉小寫方便辨識
-    
-    console.log('trigger: ' + trigger);
-    
-    if (IsKeyWord(trigger, ['蘿莉控', '!3年', '!三年'])) {
-        outType = 'image';
-        return randomReturn.image.lolicon.getRandom();
-    }
+// 分析輸入字串
+async function parseInput(inputStr) {
+    // var _isNaN = function (obj) {
+    //     return isNaN(parseInt(obj));
+    // }
+    try{
+        var replyObj = {
+            type: 'text',
+            msg: ''
+        };
 
-    else if (trigger == '!臭貓') {
-        return funnyreturn('author');
-    } 
-    
-    // 發票
-    else if (IsKeyWord(trigger, ['統一發票', '發票']) && mainMsg.length == 1) {
-        return TWticket(rplyToken);
-    }
-
-    // 縮網址
-    else if (trigger == 'shorten' && mainMsg.length > 1) {
-        shortenUrl(inputStr.substring(inputStr.indexOf(' ')+1), rplyToken);
-    }
-    
-    // google search
-    else if(IsKeyWord(trigger, ['google', '搜尋', '尋找']) && mainMsg.length > 1){
-        googleSearch(inputStr.substring(inputStr.indexOf(' ')+1), rplyToken);
-    }
-
-    // 日幣
-    else if (IsKeyWord(trigger, ['!jp', '!日幣','！jp', '！日幣', '！ＪＰ', '！ｊｐ'])) {
-        JP(rplyToken);
-    }
-
-    //貼圖
-    else if(IsKeyWord(trigger, ['打架', '互相傷害r', '來互相傷害', '來互相傷害r'])){
-        return Sticker("2", "517");
-    }
-    
-    else if(IsKeyWord(trigger,['幫QQ', '哭哭', 'QQ'])){
-        return Sticker("1", "9");
-    }
-    
-    else if(trigger == '<3'){
-        return Sticker("1", "410");
-    }
-    
-    else if(trigger == '招財貓'){
-        return Sticker("4", "607");
-    }
-    
-    else if(IsKeyWord(trigger, ['好冷', '很冷', '冷爆啦', '冷死'])){
-        return Sticker("2", "29");
-    }
-    
-    //喵喵叫開關
-    else if (IsKeyWord(trigger,['貓咪安靜', '貓咪閉嘴', '貓咪不要吵', '貓咪不要叫'])) {
-        meowSwitch = false;
-        return '......';
-    }
-    else if (trigger == '貓咪在哪裡'){
-        meowSwitch = true;
-        return randomReturn.text.meow.getRandom();
-    }
-    
-    //一般功能
-    else if (trigger.match(/運氣|運勢/) != null) {
-        return Luck(mainMsg[0], rplyToken); //各種運氣
-    }
-    else if (trigger.match(/立flag|死亡flag/) != null) {
-        return randomReturn.text.flag.getRandom();
-    }    
-    else if (IsKeyWord(trigger, ['!貓咪', '！貓咪'])) {
-        return MeowHelp();
-    }
-    else if (IsKeyWord(trigger, ['!help', '！help', '！ｈｅｌｐ', '！Ｈｅｌｐ', '！ＨＥＬＰ'])) {
-        return Help();
-    }
-    else if (trigger.match(/排序|排列/) != null && mainMsg.length >= 3) {
-        return SortIt(inputStr, mainMsg);
-    }
-    else if (trigger.match(/choice|隨機|選項|幫我選|幫我挑/) != null && mainMsg.length >= 3) {
-        return choice(inputStr, mainMsg);
-    }
-    else if (trigger.match(/喵|貓/) != null && meowSwitch) {
-        return randomReturn.text.meow.getRandom();
-    }
-    else if (trigger.match(/jpg/) != null && mainMsg.length == 1){
-        Book(trigger.replace('jpg',''), rplyToken);
-    }
-}
-
-//// request functions ////
-
-//test
-function Book(text, replyToken){
-    var Canvas = require('canvas'),
-        font = new Canvas.Font('BrSong', __dirname + '/resource/BrSong.ttc'),
-        canvas = new Canvas(174, 147, "png"),
-        ctx = canvas.getContext('2d'),
-        fs = require('fs'),
-        imgur = require('imgur');
-	
-    ctx.addFont(font);
-
-    fs.readFile( __dirname + '/resource/neta.png', (err, buf) => {
-        if (err) throw err
-        var img = new Canvas.Image;
-        img.src = buf;
-
-        ctx.drawImage(img, 0, 0, 174, 147);
-        //ctx.drawImage(img, 0, 0, 500, 370);
-        //ctx.rotate(-10*Math.PI/180);
+        let msgSplitor = (/\S+/ig);
+        //定義輸入字串
+        let mainMsg = inputStr.match(msgSplitor); 
+        //指定啟動詞在第一個詞，轉小寫方便辨識
+        let trigger = mainMsg[0].toString().toLowerCase(); 
         
-        var strs= new Array();
-        strs = text.split("");
+        if (IsKeyWord(trigger, ['蘿莉控', '!3年', '!三年'])) {
+            replyObj.type = 'image';
+            replyObj.msg = randomReturn.image.lolicon.getRandom();
+        }
 
-        ctx.font = '20px bold BrSong';
-        ctx.fillStyle = "#FFFFFF";
-        for (i=0;i<strs.length ;i++ ) { 
-            ctx.fillText(strs[i],132,(32+(i*28)));
+        else if (trigger == '!臭貓') {
+            replyObj.msg = randomReturn.text.author.getRandom();
         } 
-
-        //ctx.rotate(10*Math.PI/180);
-
-        fs.writeFileSync("test.jpg", canvas.toBuffer());
-
-        imgur.setClientId('59891e0427c16b3');
-
-        imgur.uploadFile( __dirname + '/test.jpg')
-        .then(function (json) {
-            replyMsgToLine('image', replyToken, json.data.link);
-        })
-        .catch(function (err) {
-                console.error(err.message);
-        });
-    })
-}
-
-
-// JP
-function JP(replyToken) {
-    var options = {
-        uri: "https://www.esunbank.com.tw/bank/personal/deposit/rate/forex/foreign-exchange-rates",
-        transform: function (body) {
-            return cheerio.load(body);
-        }
-    };
-    rp(options)
-        .then(function ($) {
-            var fax = $("#inteTable1 > tbody > .tableContent-light");
-            var str = "玉山銀行目前日幣的即期賣出匯率為 " + fax[3].children[5].children[0].data + " 換起來! ヽ(`Д´)ノ";
-            replyMsgToLine(outType, replyToken, str);
-        })
-        .catch(function (e) {
-            return "JP error: " + e.toString();;
-        });
-}
-
-// google search
-
-function googleSearch(str, rplyToken){
-    let s = GetUrl('https://www.google.com.tw/search', {
-        q: str
-    });
-    
-    var rq = require("request");
-    rq.post('https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s', {
-        json: {
-            'longUrl': s
-        }
-    }, function (error, response, body) {
-        if(error) {
-            return 'googleSearch error: ' + error;
-        } else {
-            s = body.id;
-            replyMsgToLine(outType, rplyToken, s + '\n' + randomReturn.text.google.getRandom());
-        }
-    });
-}
-
-// shorten Url
-
-function shortenUrl(url, replyToken){
-    var rq = require("request");
-    rq.post('https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s', {
-        json: {
-            'longUrl': url
-        }
-    }, function (error, response, body) {
-        if(error) {
-            return 'error' + error;
-        } else {
-            url = body.id;
-            replyMsgToLine(outType, replyToken, url);
-        }
-    });
-}
-
-// 統一發票
-
-function TWticket(replyToken) {
-    
-    var options = {
-        uri: 'http://invoice.etax.nat.gov.tw/index.html',
-        transform: function (body) {
-            return cheerio.load(body);
-        }
-    };
-    rp(options).then(function ($) {
-        var fax = $(".t18Red");
         
-        var s = 
-        $("#area1")[0].children[3].children[0].data.halfToFull() +
-        '\n特別獎：\n    ' + 
-        fax[0].children[0].data.halfToFull() + 
-        '\n特獎：\n    ' + 
-        fax[1].children[0].data.halfToFull() +
-        '\n頭獎～六獎：\n    ' + 
-        fax[2].children[0].data.replace(/、/g, '\n    ').halfToFull(false) +
-        '\n增開六獎：\n    ' + 
-        fax[3].children[0].data.replace(/、/g, '\n    ').halfToFull(false);
-        
-        replyMsgToLine(outType, replyToken, s);
-    })
-    .catch(function (err) {
-        console.log('TWticket error: ' + err);
-    });
-}
+        // 發票
+        else if (IsKeyWord(trigger, ['統一發票', '發票']) && mainMsg.length == 1) {
 
-function Constellation(index, replyToken) {
-    var today = new Date().toISOString().substring(0, 10);
-    var options = {
-        uri: 'http://astro.click108.com.tw/daily_' + index + '.php?iAcDay=' + today + '&iAstro=' + index,
-        transform: function (body) {
-            return cheerio.load(body);
+            var result = await myFunc.TWticket();
+            if(result.IsSuccess){
+                replyObj.msg = result.msg;
+            }else{
+                throw result.msg;
+            }
         }
-    };
-    rp(options).then(function ($) {
-        var fax = $(".TODAY_CONTENT")[0]
+
+        // 縮網址
+        else if (trigger == 'shorten' && mainMsg.length > 1) {
+            var result = await myFunc.shortenUrl(inputStr.substring(inputStr.indexOf(' ')+1));
+            if(result.IsSuccess){
+                replyObj.msg = result.msg;
+            }else{
+                throw result.msg;
+            }
+        }
         
-        var s = 
-        fax.children[1].children[0].data + '\n' +
-        fax.children[3].children[0].children[0].data + '\n' +
-        fax.children[4].children[0].data + '\n' +
-        fax.children[6].children[0].children[0].data + '\n' +
-        fax.children[7].children[0].data + '\n' +
-        fax.children[9].children[0].children[0].data + '\n' +
-        fax.children[10].children[0].data + '\n' +
-        fax.children[12].children[0].children[0].data + '\n' +
-        fax.children[13].children[0].data;
+        // google search
+        else if(IsKeyWord(trigger, ['google', '搜尋', '尋找']) && mainMsg.length > 1){
+            var result = await myFunc.googleSearch(inputStr.substring(inputStr.indexOf(' ')+1));
+            if(result.IsSuccess){
+                replyObj.msg = result.msg;
+            }else{
+                throw result.msg;
+            }
+        }
+
+        // 日幣
+        else if (IsKeyWord(trigger, ['!jp', '!日幣','！jp', '！日幣', '！ＪＰ', '！ｊｐ'])) {
+            var result = await myFunc.JP();
+            if(result.IsSuccess){
+                replyObj.msg = result.msg;
+            }else{
+                throw result.msg;
+            }
+        }
+
+        //梗圖
+        else if (trigger.match(/jpg/) != null && mainMsg.length == 1){
+            var result = await myFunc.Neta(mainMsg[0].replace('jpg',''));
+            if(result.IsSuccess){
+                replyObj.type = 'image';
+                replyObj.msg = result.msg;
+            }else{
+                throw result.msg;
+            }
+        }
+
+        //貼圖
+        else if(IsKeyWord(trigger, ['打架', '互相傷害r', '來互相傷害', '來互相傷害r'])){
+            replyObj.type = 'sticker';
+            replyObj.msg = Sticker("2", "517");
+        }
         
-        replyMsgToLine(outType, replyToken, s);
-    })
-    .catch(function (err) {
-        console.log("Constellation error: " + err.toString());
-    });
+        else if(IsKeyWord(trigger,['幫QQ', '哭哭', 'QQ'])){
+            replyObj.type = 'sticker';
+            replyObj.msg = Sticker("1", "9");
+        }
+        
+        else if(trigger == '<3'){
+            replyObj.type = 'sticker';
+            replyObj.msg = Sticker("1", "410");
+        }
+        
+        else if(trigger == '招財貓'){
+            replyObj.type = 'sticker';
+            replyObj.msg = Sticker("4", "607");
+        }
+        
+        else if(IsKeyWord(trigger, ['好冷', '很冷', '冷爆啦', '冷死'])){
+            replyObj.type = 'sticker';
+            replyObj.msg = Sticker("2", "29");
+        }
+        
+        //喵喵叫開關
+        else if (IsKeyWord(trigger,['貓咪安靜', '貓咪閉嘴', '貓咪不要吵', '貓咪不要叫'])) {
+            meowSwitch = false;
+            replyObj.msg = '......';
+        }
+        else if (trigger == '貓咪在哪裡'){
+            meowSwitch = true;
+            replyObj.msg = randomReturn.text.meow.getRandom();
+        }
+        
+        //一般功能
+        else if (trigger.match(/運氣|運勢/) != null) {
+            var result = await myFunc.Luck(mainMsg[0]);
+            if(result.IsSuccess){
+                replyObj.msg = result.msg;
+            }else{
+                throw result.msg;
+            }
+        }
+        else if (trigger.match(/立flag|死亡flag/) != null) {
+            replyObj.msg = randomReturn.text.flag.getRandom();
+        }    
+        else if (IsKeyWord(trigger, ['!貓咪', '！貓咪'])) {
+            replyObj.msg = MeowHelp();
+        }
+        else if (IsKeyWord(trigger, ['!help', '！help', '！ｈｅｌｐ', '！Ｈｅｌｐ', '！ＨＥＬＰ'])) {
+            var result = await myFunc.Help();
+            if(result.IsSuccess){
+                replyObj.msg = result.msg;
+            }else{
+                throw result.msg;
+            }
+        }
+        else if (trigger.match(/排序|排列/) != null && mainMsg.length >= 3) {
+            replyObj.msg = myFunc.SortIt(inputStr, mainMsg);
+        }
+        else if (trigger.match(/choice|選擇|隨機|選項|幫我選|幫我挑/) != null && mainMsg.length >= 3) {
+            replyObj.msg = myFunc.Choice(inputStr, mainMsg);
+        }
+        else if (trigger.match(/喵|貓/) != null && meowSwitch) {
+            replyObj.msg = randomReturn.text.meow.getRandom();
+        }
+        
+        return replyObj;
+
+    }catch(e){
+        console.log('parse inpur error:', e.toString());
+    }
 }
 
-//// request functions end ////
 
-
-////////////////////////////////////////
-//////////////// stickers
-////////////////////////////////////////
+//貼圖回覆
 function Sticker(package, sticker){
-    outType = 'sticker';
-    var stk = {
+    var msg = {
         type: "sticker",
         packageId: package,
         stickerId: sticker
     };
-    return stk;
-}
-
-////////////////////////////////////////
-//////////////// 恩...
-////////////////////////////////////////
-function funnyreturn(name) {
-
-    let authorArr = ['↑正直清新不鹹濕，女友募集中！','我要給你一個翻到後腦勺的、無比華麗的、空前絕後的特大號白眼'];
-
-    var rplyArr;
-    
-    if (name == 'author') {
-        rplyArr = authorArr;
-    } 
-    
-     return rplyArr[Math.floor((Math.random() * (rplyArr.length)) + 0)];
+    return msg;
 }
 
 
-/// 運氣運勢相關
+/// Others
 
-function Luck(str, replyToken) {
-    var table = ['牡羊座.白羊座', '金牛座', '雙子座', '巨蟹座', '獅子座', '處女座', '天秤座.天平座', '天蠍座', '射手座', '魔羯座', '水瓶座', '雙魚座'];
-    var target = str.replace('運氣', '').replace('運勢','');
-    
-    var index = table.indexOf(table.find(function(element){
-        if(element.indexOf(target)>-1) return element;
-    }));
-    
-    if(index < 0 || target == ''){
-        return str + ' ： ' + randomReturn.text.luck.getRandom();
-    }else{
-        // call request
-        Constellation(index, replyToken);
-    }
-}
+// 計算當地時間
+// function calcTime(offset) {
 
-////////////////////////////////////////
-//////////////// Others
-////////////////////////////////////////
+//     // 建立現在時間的物件
+//     d = new Date();
 
-function calcTime(offset) {
+//     // 取得 UTC time
+//     utc = d.getTime() + (d.getTimezoneOffset() * 60000);
 
-    // 建立現在時間的物件
-    d = new Date();
+//     // 新增不同時區的日期資料
+//     nd = new Date(utc + (3600000*offset));
 
-    // 取得 UTC time
-    utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+//     // 顯示當地時間
+//     return (nd.getMonth()+1)+'-'+nd.getDate();
+// }
 
-    // 新增不同時區的日期資料
-    nd = new Date(utc + (3600000*offset));
 
-    // 顯示當地時間
-    return (nd.getMonth()+1)+'-'+nd.getDate();
-}
 
-function SortIt(input, mainMsg) {
-
-    let a = input.replace(mainMsg[0], '').match(/\S+/ig);
-    for (var i = a.length - 1; i >= 0; i--) {
-        var randomIndex = Math.floor(Math.random() * (i + 1));
-        var itemAtIndex = a[randomIndex];
-        a[randomIndex] = a[i];
-        a[i] = itemAtIndex;
-    }
-    return mainMsg[0] + ' → [' + a + ']';
-}
-
-function choice(input, str) {
-    let a = input.replace(str[0], '').match(/\S+/ig);
-    return str[0] + '[' + a + '] → ' + a[Math.floor((Math.random() * (a.length + 0)))];
-}
-
-// 組url
-function GetUrl(url, data) {
-    if (data != "" && typeof data != "undefined") {
-        var keys = Object.keys(data);
-        for (var i = 0; i < keys.length; i++) {
-            var dataName = keys[i];
-            if (data.hasOwnProperty(dataName)) {
-                url += (i == 0) ? "?" : "&";
-                url += dataName + "=" + data[dataName];
-            }
-        }
-    }
-    return url;
-}
-
+//對應關鍵字
 function IsKeyWord(target, strs){
     if(target==null||strs==null){
         return false;
@@ -524,218 +353,11 @@ function IsKeyWord(target, strs){
     return false;
 }
 
-////////////////////////////////////////
-//////////////// Help
-////////////////////////////////////////
 
-function Help() {
-    return '【貓咪喵喵】 by臭貓\
-\n 主要是娛樂用途 (&各種裱人功能OuOb)\
-\n \
-\n 使用說明:\
-\n *友善回應(OuOb)*\
-\n     關鍵字: !臭貓\
-\n *玉山銀行日幣匯率*\
-\n     關鍵字: !JP/!日幣\
-\n *喵喵叫開關*\
-\n     關鍵字: 貓咪安靜/貓咪閉嘴/貓咪不要吵\
-\n     關鍵字2: 貓咪在哪裡\
-\n *選擇功能*\
-\n     關鍵字: choice/隨機/選項/幫我選\
-\n     例子: 隨機選顏色 紅 黃 藍\
-\n *隨機排序*\
-\n     關鍵字: 排序\
-\n     例子: 吃東西排序 羊肉 牛肉 豬肉\
-\n *占卜功能*\
-\n     關鍵字: 運氣/運勢/天平運勢\
-\n     例子: 今日運勢\
-\n *死亡FLAG*\
-\n     關鍵字: 立Flag/死亡flag\
-\n *其他彩蛋*\
-\n     關鍵字: 不告訴你\
-';
-}
 
 function MeowHelp() {
     return randomReturn.text.meow.getRandom() + '\n要做什麼喵?\n\n(輸入 !help 以獲得使用說明)';
 }
-
-//// 打卡test
-
-var setting = require('./settings.json');
-
-var PunchCard = function() {
-    var needPunchedIn = true;
-
-    var d, utc, today, date, hour, day;
-
-    var card = {
-        key: '',
-        groupUBINo: "20939790",
-        companyID: "1",
-        account: "",
-        language: "zh-tw",
-        longitude: "",
-        latitude: "",
-        address: "",
-        memo: "",
-        mobile_info: ""
-    };
-
-    var doInit = function(){
-        d = new Date();
-        utc = d.getTime() + (d.getTimezoneOffset() * 60000);
-        today = new Date(utc + (3600000*8));
-        date = today.getFullYear()+'/'+(today.getMonth()+1)+'/'+today.getDate();
-        hour = today.getHours();
-        day = today.getDay();
-    };
-
-    var doValidate = function(){
-        needPunchedIn = function(){
-            if(setting.Dates.ReturnDays.includes(date)){
-                return true;
-            }
-            else if(day == 6 || day == 0){
-                return false;
-            }
-            else if(setting.Dates.Holidays.includes(date)){
-                return false;
-            }else{
-                return true;
-            }
-        };
-        if(needPunchedIn()){
-            if(hour == 8||hour == 18){
-                return true;
-            }else{
-                return false;
-            }
-        }
-    }
-
-    var doPunchIn = function(onWork, person){
-	    
-	console.log('Punch: doPunchIn' + ' - ' + person.Name);
-	var position = setting.Positions[person.Place];
-	    
-        if(onWork){
-            // 抓session key
-            request.post({
-                url: "https://workflow.pershing.com.tw/WFMobileWeb/Service/eHRFlowMobileService.asmx/Login",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    "X-Requested-With": "XMLHttpRequest"
-                },
-                body: GetUrlEncodeJson({
-                    groupUBINo: 20939790,
-                    companyID: 1,
-                    account: person.Account,
-                    password: person.Password})
-            },function(error, response, body){
-                try{
-                    var data = parser.xml2json(body);
-                    if(data.FunctionExecResult.IsSuccess){
-                        card.key = data.FunctionExecResult.ReturnObject["_@ttribute"];
-			card.account = person.Account;
-                        card.latitude = position.lat_base + Math.floor((Math.random() * position.lat_offset + position.lat_more));
-                        card.longitude = position.long_base + Math.floor((Math.random() * position.long_offset) + position.long_more);
-			    
-                        // 抓地址
-                        request.post({
-                            url: "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + card.latitude + "," + card.longitude + "&language=zh-TW&key=" +GeocodingKey
-                        },function(error, response, body){
-                            try{
-                                var result = JSON.parse(body);
-                                card.address = result.results[0].formatted_address;
-                
-                                request.post({
-                                    url: "https://workflow.pershing.com.tw/WFMobileWeb/Service/eHRFlowMobileService.asmx/InsertCardData",
-                                    headers: {
-                                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                                        "X-Requested-With": "XMLHttpRequest"
-                                    },
-                                    body: encodeURI(GetUrlEncodeJson(card))
-                                },function(error, response, body){
-                                    try{
-                                        var data = parser.xml2json(body);
-					replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', person.Name + '(' + person.Place + ') - ' + data.FunctionExecResult.ReturnMessage);
-                                        console.log(person.Name + ' - ' + data.FunctionExecResult.ReturnMessage);
-                                    }catch(e){
-                                        replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', person.Name + ' - 打卡失敗(打卡)');
-					console.log(person.Name + ' - Punch error: ' + e);
-                                    }
-                                })
-                            }catch(e){
-                                 replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', person.Name + ' - 打卡失敗(地址)');
-				 console.log(person.Name + ' - Punch error: ' + e);
-                            }
-                        })
-                    }
-                }catch(e){
-                    replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', person.Name + ' - 打卡失敗(登入)');
-		    console.log(person.Name + ' - Punch error: ' + e);
-                }
-            })
-        }
-        else{
-            console.log(person.Name + ' - Punch error: Not punch time', date, hour + '點', '(' + day + ')');
-        }
-    }
-
-    return {
-        TrytoPunchIn: function(p){
-            var _self = this;
-	    doInit();
-            doPunchIn(doValidate(), p);
-            setTimeout(function(){ 
-                _self.TrytoPunchIn(p);
-            }, 3600000);
-        }
-    }
-}();
-
-//所有人打卡
-setting.Persons.forEach(function(p){
-    PunchCard.TrytoPunchIn(p);
-});
-
-function GetUrlEncodeJson(data) {
-    var str = '';
-    if (data != "" && typeof data != "undefined") {
-        var keys = Object.keys(data);
-        for (var i = 0; i < keys.length; i++) {
-            var dataName = keys[i];
-            if (data.hasOwnProperty(dataName)) {
-                str += (i == 0) ? "" : "&";
-                str += dataName + "=" + data[dataName];
-            }
-        }
-    }
-    return str;
-}
-
-
-////////////////////////////////////////
-////////////////prototype
-////////////////////////////////////////
-
-String.prototype.halfToFull = function (flag) {
-    //半形轉全形
-    var temp = "";
-    for (var i = 0; i < this.toString().length; i++) {
-        var charCode = this.toString().charCodeAt(i);
-        if (charCode <= 126 && charCode >= 33) {
-            charCode += 65248;
-        } else if (charCode == 32) { // 半形空白轉全形
-            if(flag){
-                charCode = 12288;
-            }
-        }
-        temp = temp + String.fromCharCode(charCode);
-    }
-    return temp;
-};
 
 Array.prototype.getRandom = function (flag) {
     //取得陣列隨機內容
