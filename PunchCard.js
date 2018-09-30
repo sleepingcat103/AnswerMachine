@@ -27,7 +27,7 @@ exports.TrytoPunchIn = function(p) {
                 mobile_info: ""
             };
 
-            var doInit = function(){
+            function doInit(){
                 d = new Date();
                 utc = d.getTime() + (d.getTimezoneOffset() * 60000);
                 today = new Date(utc + (3600000*8));
@@ -36,7 +36,7 @@ exports.TrytoPunchIn = function(p) {
                 day = today.getDay();
             };
 
-            var doValidate = function(){
+            function doValidate(){
                 needPunchedIn = function(){
                     if(setting.Dates.ReturnDays.includes(date)){
                         return true;
@@ -59,7 +59,7 @@ exports.TrytoPunchIn = function(p) {
                 }
             }
 
-            var doPunchIn = function(onWork, person){
+            function doPunchIn(onWork, person){
                 
                 console.log('Punch: doPunchIn' + ' - ' + person.Name);
                 var position = setting.Positions[person.Place];
