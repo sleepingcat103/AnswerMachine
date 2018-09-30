@@ -2,14 +2,12 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     jsonParser = bodyParser.json(),
     https = require('https'),
-    app = express(),
-    cheerio = require("cheerio"),
-    fs = require('fs'),
-    rp = require('request-promise');
+    app = express();
     
 var randomReturn = require('./RandomReturn.json'),
+    setting = require('./settings.json'),
     PunchCard = require('./PunchCard.js'),
-    setting = require('./settings.json');
+    myFunc = require('./MyFunc.js');
 
 var ChannelAccessKey = 'actVI2pGSgmQ+JYuF2il02qMYH+1+3Q6pvaTjjL4J77uWSuVRoTZnloLqZG39jxfuZAWyS77LfHuQ9rHx4vupzxq3sDLKcwRraRq0F0t9B8aULHlhuO2BYmiIvOFjT6Vs+RFkd3GDQnNB2Ykvo6rlgdB04t89/1O/w1cDnyilFU=';
 
@@ -39,7 +37,7 @@ app.post('/', jsonParser, async function (req, res) {
         
         //初次加入給使用說明訊息
         if (type == 'join' || type == 'follow'){
-            var result = await Help();
+            var result = await myFunc.Help();
             if(result.IsSuccess){
                 replyMsgToLine('text', replyToken, result.msg);
             }else{
@@ -70,8 +68,8 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
     let rplyObj;
     
     // test
-    //console.log('Do reply to line,', outType, rplyToken, rplyVal)
-    //return;
+    // console.log('Do reply to line,', outType, rplyToken, rplyVal)
+    // return;
 
     // push
     if (outType == 'push') {
@@ -126,7 +124,7 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
     var options = setOptions();
     var request = https.request(options, function (response) {
         console.log('Status: ' + response.statusCode);
-        console.log('Headers: ' + JSON.stringify(response.headers));
+        //console.log('Headers: ' + JSON.stringify(response.headers));
         response.setEncoding('utf8');
         response.on('data', function (body) {
             console.log('body:', body);
@@ -181,7 +179,7 @@ async function parseInput(inputStr) {
         // 發票
         else if (IsKeyWord(trigger, ['統一發票', '發票']) && mainMsg.length == 1) {
 
-            var result = await TWticket();
+            var result = await myFunc.TWticket();
             if(result.IsSuccess){
                 replyObj.msg = result.msg;
             }else{
@@ -191,7 +189,7 @@ async function parseInput(inputStr) {
 
         // 縮網址
         else if (trigger == 'shorten' && mainMsg.length > 1) {
-            var result = await shortenUrl(inputStr.substring(inputStr.indexOf(' ')+1));
+            var result = await myFunc.shortenUrl(inputStr.substring(inputStr.indexOf(' ')+1));
             if(result.IsSuccess){
                 replyObj.msg = result.msg;
             }else{
@@ -201,7 +199,7 @@ async function parseInput(inputStr) {
         
         // google search
         else if(IsKeyWord(trigger, ['google', '搜尋', '尋找']) && mainMsg.length > 1){
-            var result = await googleSearch(inputStr.substring(inputStr.indexOf(' ')+1));
+            var result = await myFunc.googleSearch(inputStr.substring(inputStr.indexOf(' ')+1));
             if(result.IsSuccess){
                 replyObj.msg = result.msg;
             }else{
@@ -211,7 +209,7 @@ async function parseInput(inputStr) {
 
         // 日幣
         else if (IsKeyWord(trigger, ['!jp', '!日幣','！jp', '！日幣', '！ＪＰ', '！ｊｐ'])) {
-            var result = await JP();
+            var result = await myFunc.JP();
             if(result.IsSuccess){
                 replyObj.msg = result.msg;
             }else{
@@ -221,7 +219,7 @@ async function parseInput(inputStr) {
 
         //梗圖
         else if (trigger.match(/jpg/) != null && mainMsg.length == 1){
-            var result = await Neta(mainMsg[0].replace('jpg',''));
+            var result = await myFunc.Neta(mainMsg[0].replace('jpg',''));
             if(result.IsSuccess){
                 replyObj.type = 'image';
                 replyObj.msg = result.msg;
@@ -268,7 +266,7 @@ async function parseInput(inputStr) {
         
         //一般功能
         else if (trigger.match(/運氣|運勢/) != null) {
-            var result = await Luck(mainMsg[0]);
+            var result = await myFunc.Luck(mainMsg[0]);
             if(result.IsSuccess){
                 replyObj.msg = result.msg;
             }else{
@@ -282,7 +280,7 @@ async function parseInput(inputStr) {
             replyObj.msg = MeowHelp();
         }
         else if (IsKeyWord(trigger, ['!help', '！help', '！ｈｅｌｐ', '！Ｈｅｌｐ', '！ＨＥＬＰ'])) {
-            var result = await Help();
+            var result = await myFunc.Help();
             if(result.IsSuccess){
                 replyObj.msg = result.msg;
             }else{
@@ -290,10 +288,10 @@ async function parseInput(inputStr) {
             }
         }
         else if (trigger.match(/排序|排列/) != null && mainMsg.length >= 3) {
-            replyObj.msg = SortIt(inputStr, mainMsg);
+            replyObj.msg = myFunc.SortIt(inputStr, mainMsg);
         }
-        else if (trigger.match(/choice|隨機|選項|幫我選|幫我挑/) != null && mainMsg.length >= 3) {
-            replyObj.msg = Choice(inputStr, mainMsg);
+        else if (trigger.match(/choice|選擇|隨機|選項|幫我選|幫我挑/) != null && mainMsg.length >= 3) {
+            replyObj.msg = myFunc.Choice(inputStr, mainMsg);
         }
         else if (trigger.match(/喵|貓/) != null && meowSwitch) {
             replyObj.msg = randomReturn.text.meow.getRandom();
@@ -305,266 +303,6 @@ async function parseInput(inputStr) {
         console.log('parse inpur error:', e.toString());
     }
 }
-
-//// request functions ////
-
-// 梗圖嵌字 
-// 待更新: 調整字體&位置的演算法
-function Neta(text){
-
-    return new Promise(function(resolve, reject){
-        try{
-            var Canvas = require('canvas'),
-                font = new Canvas.Font('BrSong', __dirname + '/resource/BrSong.ttc'),
-                canvas = new Canvas(174, 147, "png"),
-                ctx = canvas.getContext('2d'),
-                imgur = require('imgur');
-            
-            ctx.addFont(font);
-
-            fs.readFile( __dirname + '/resource/neta.png', (err, buf) => {
-                if (err) throw err
-                var img = new Canvas.Image;
-                img.src = buf;
-
-                ctx.drawImage(img, 0, 0, 174, 147);
-                //ctx.rotate(-10*Math.PI/180);
-                
-                var strs= new Array();
-                strs = text.split("");
-
-                ctx.font = '20px bold BrSong';
-                ctx.fillStyle = "#FFFFFF";
-                for (i=0;i<strs.length ;i++ ) { 
-                    ctx.fillText(strs[i],132,(32+(i*28)));
-                } 
-
-                //ctx.rotate(10*Math.PI/180);
-
-                fs.writeFileSync("test.jpg", canvas.toBuffer());
-
-                imgur.setClientId('59891e0427c16b3');
-
-                imgur.uploadFile( __dirname + '/test.jpg')
-                .then(function (json) {
-                    resolve({
-                        IsSuccess: true,
-                        msg: json.data.link
-                    });
-                })
-                .catch(function (error) {
-                    throw error.message;
-                });
-            })
-        }catch(e){
-            resolve({
-                IsSuccess: false,
-                msg: 'Neta error": ' + e.toString()
-            });
-        }
-    });
-}
-
-
-// 玉山銀行日幣即期匯率
-function JP() {
-
-    return new Promise(function(resolve, reject){
-        try{
-            var options = {
-                uri: "https://www.esunbank.com.tw/bank/personal/deposit/rate/forex/foreign-exchange-rates",
-                transform: function (body) {
-                    return cheerio.load(body);
-                }
-            };
-
-            rp(options)
-            .then(function ($) {
-
-                var fax = $("#inteTable1 > tbody > .tableContent-light");
-                var str = "玉山銀行目前日幣的即期賣出匯率為 " + fax[3].children[5].children[0].data + " 換起來! ヽ(`Д´)ノ";
-
-                resolve({
-                    IsSuccess: true,
-                    msg: str
-                });
-            })
-            .catch(function (e) {
-                throw e.toString();
-            });
-        }catch(e){
-            resolve({
-                IsSuccess: false,
-                msg: 'Neta error": ' + e.toString()
-            });
-        }
-    });
-}
-
-// google search
-// 加上縮址
-function googleSearch(str){
-
-    return new Promise(function(resolve, reject){
-        try{
-            let s = GetUrl('https://www.google.com.tw/search', {
-                q: str
-            });
-            
-            var rq = require("request");
-            rq.post('https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s', {
-                json: {
-                    'longUrl': s
-                }
-            }, function (error, response, body) {
-                if(error) {
-                    throw error.toString();
-                } else {
-                    s = body.id;
-                    resolve({
-                        IsSuccess: true,
-                        msg: s + '\n' + randomReturn.text.google.getRandom()
-                    });
-                }
-            });
-        }catch(e){
-            resolve({
-                IsSuccess: false,
-                msg: 'Neta error": ' + e.toString()
-            });
-        }
-    })
-}
-
-// shorten Url
-
-function shortenUrl(url){
-    return new Promise(function(resolve, reject){
-        try{
-            var rq = require("request");
-            rq.post('https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyD8cFQEtnwmlbV-D1MtmvLjc_rVGFZfg6s', {
-                json: {
-                    'longUrl': url
-                }
-            }, function (error, response, body) {
-                if(error) {
-                    throw error;
-                } else {
-                    resolve({
-                        IsSuccess: true,
-                        msg: body.id
-                    });
-                }
-            });
-        }catch(e){
-            resolve({
-                IsSuccess: false,
-                msg: 'Neta error": ' + e.toString()
-            });
-        }
-    })
-}
-
-// 統一發票
-
-function TWticket() {
-    return new Promise(function(resolve, reject){
-        try{
-            var options = {
-                uri: 'http://invoice.etax.nat.gov.tw/index.html',
-                transform: function (body) {
-                    return cheerio.load(body);
-                }
-            };
-            rp(options).then(function ($) {
-                var fax = $(".t18Red");
-                
-                var s = $("#area1")[0].children[3].children[0].data.halfToFull() +
-                    '\n特別獎：\n    ' + 
-                    fax[0].children[0].data.halfToFull() + 
-                    '\n特獎：\n    ' + 
-                    fax[1].children[0].data.halfToFull() +
-                    '\n頭獎～六獎：\n    ' + 
-                    fax[2].children[0].data.replace(/、/g, '\n    ').halfToFull(false) +
-                    '\n增開六獎：\n    ' + 
-                    fax[3].children[0].data.replace(/、/g, '\n    ').halfToFull(false);
-                
-                    resolve({
-                        IsSuccess: true,
-                        msg: s
-                    });
-            })
-            .catch(function (error) {
-                throw(error);
-            });
-        }catch(e){
-            resolve({
-                IsSuccess: false,
-                msg: 'Neta error": ' + e.toString()
-            });
-        }
-    });
-}
-
-/// 運氣運勢相關
-
-function Luck(str) {
-    return new Promise(function(resolve, reject){
-        try{
-            var table = ['牡羊座.白羊座', '金牛座', '雙子座', '巨蟹座', '獅子座', '處女座', '天秤座.天平座', '天蠍座', '射手座', '魔羯座', '水瓶座', '雙魚座'];
-            var target = str.replace('運氣', '').replace('運勢','');
-            
-            var index = table.indexOf(table.find(function(element){
-                if(element.indexOf(target)>-1) return element;
-            }));
-            
-            if(index < 0 || target == ''){
-                resolve({
-                    IsSuccess: true,
-                    msg: str + ' ： ' + randomReturn.text.luck.getRandom()
-                });
-
-            }else{
-                var today = new Date().toISOString().substring(0, 10);
-                var options = {
-                    uri: 'http://astro.click108.com.tw/daily_' + index + '.php?iAcDay=' + today + '&iAstro=' + index,
-                    transform: function (body) {
-                        return cheerio.load(body);
-                    }
-                };
-                rp(options).then(function ($) {
-                    var fax = $(".TODAY_CONTENT")[0]
-                    
-                    var s = 
-                    fax.children[1].children[0].data + '\n' +
-                    fax.children[3].children[0].children[0].data + '\n' +
-                    fax.children[4].children[0].data + '\n' +
-                    fax.children[6].children[0].children[0].data + '\n' +
-                    fax.children[7].children[0].data + '\n' +
-                    fax.children[9].children[0].children[0].data + '\n' +
-                    fax.children[10].children[0].data + '\n' +
-                    fax.children[12].children[0].children[0].data + '\n' +
-                    fax.children[13].children[0].data;
-                    
-                    resolve({
-                        IsSuccess: true,
-                        msg: s
-                    });
-                })
-                .catch(function (error) {
-                    throw error.toString();
-                });
-            }
-            
-        }catch(e){
-            resolve({
-                IsSuccess: false,
-                msg: 'Neta error": ' + e.toString()
-            });
-        }
-    });
-}
-//// request functions end ////
 
 
 //貼圖回覆
@@ -596,39 +334,7 @@ function Sticker(package, sticker){
 //     return (nd.getMonth()+1)+'-'+nd.getDate();
 // }
 
-// 排列
-function SortIt(input, mainMsg) {
 
-    let a = input.replace(mainMsg[0], '').match(/\S+/ig);
-    for (var i = a.length - 1; i >= 0; i--) {
-        var randomIndex = Math.floor(Math.random() * (i + 1));
-        var itemAtIndex = a[randomIndex];
-        a[randomIndex] = a[i];
-        a[i] = itemAtIndex;
-    }
-    return mainMsg[0] + ' → [' + a + ']';
-}
-
-//選擇
-function Choice(input, str) {
-    let a = input.replace(str[0], '').match(/\S+/ig);
-    return str[0] + '[' + a + '] → ' + a[Math.floor((Math.random() * (a.length + 0)))];
-}
-
-// 組 get url
-function GetUrl(url, data) {
-    if (data != "" && typeof data != "undefined") {
-        var keys = Object.keys(data);
-        for (var i = 0; i < keys.length; i++) {
-            var dataName = keys[i];
-            if (data.hasOwnProperty(dataName)) {
-                url += (i == 0) ? "?" : "&";
-                url += dataName + "=" + data[dataName];
-            }
-        }
-    }
-    return url;
-}
 
 //對應關鍵字
 function IsKeyWord(target, strs){
@@ -647,51 +353,11 @@ function IsKeyWord(target, strs){
     return false;
 }
 
-// Help
 
-function Help() {
-    return new Promise(function(resolve, reject){
-        try{
-            fs.readFile( __dirname + '/README.txt', function(err, buf) {
-                if(err) throw err.toString();
-
-                resolve({
-                    IsSuccess: true,
-                    msg: buf.toString()
-                })
-            });
-        }catch(e){
-            resolve({
-                IsSuccess: false,
-                msg: e.toString()
-            })
-        }
-    });
-}
 
 function MeowHelp() {
     return randomReturn.text.meow.getRandom() + '\n要做什麼喵?\n\n(輸入 !help 以獲得使用說明)';
 }
-
-
-///////////// prototype /////////////////
-
-String.prototype.halfToFull = function (flag) {
-    //半形轉全形
-    var temp = "";
-    for (var i = 0; i < this.toString().length; i++) {
-        var charCode = this.toString().charCodeAt(i);
-        if (charCode <= 126 && charCode >= 33) {
-            charCode += 65248;
-        } else if (charCode == 32) { // 半形空白轉全形
-            if(flag){
-                charCode = 12288;
-            }
-        }
-        temp = temp + String.fromCharCode(charCode);
-    }
-    return temp;
-};
 
 Array.prototype.getRandom = function (flag) {
     //取得陣列隨機內容
