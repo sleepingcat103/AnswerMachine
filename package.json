@@ -1,23 +1,23 @@
 {
-    "name": "SC",
-    "version": "1.0.0",
+    "name": "sc.catmeow",
+    "version": "1.1.0",
     "description": "SC Line Bot",
     "engines": {
-       "node": "6.11.1"
+        "node": "8.12.0"
     },
     "main": "index.js",
     "scripts": {
-       "start": "node index.js"
+        "start": "node index.js"
     },
     "dependencies": {
-        "express": "4.13.3",
-        "request": "2.85.0",
         "body-parser": "1.15.2",
-        "request-promise": "^4.2.2",
-        "cheerio": "^1.0.0-rc.2",
-        "xml2json-light": "1.0.6",
         "canvas": "^1.6.12",
-        "imgur": "^0.2.1"
+        "cheerio": "^1.0.0-rc.2",
+        "express": "4.13.3",
+        "imgur": "^0.2.1",
+        "request": "2.85.0",
+        "request-promise": "^4.2.2",
+        "xml2json-light": "1.0.6"
     },
     "keywords": [
         "SC",
