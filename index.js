@@ -66,10 +66,6 @@ app.listen(app.get('port'), function () {
 function replyMsgToLine(outType, rplyToken, rplyVal) {
 
     let rplyObj;
-    
-    // test
-    // console.log('Do reply to line,', outType, rplyToken, rplyVal)
-    // return;
 
     // push
     if (outType == 'push') {
@@ -88,13 +84,11 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
         v_path = '/v2/bot/message/reply';
         rplyObj = {
             replyToken: rplyToken,
-            messages: [
-                {
-                    type: "image",
-                    originalContentUrl: rplyVal,
-                    previewImageUrl: rplyVal
-                }
-            ]
+            messages: [{
+                type: "image",
+                originalContentUrl: rplyVal,
+                previewImageUrl: rplyVal
+            }]
         }
     } 
     
@@ -112,15 +106,20 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
         v_path = '/v2/bot/message/reply';
         rplyObj = {
             replyToken: rplyToken,
-            messages: [
-                {
-                  type: "text",
-                  text: rplyVal
-                }
-            ]
+            messages: [{
+                type: "text",
+                text: rplyVal
+            }]
         }
     }
+
     let rplyJson = JSON.stringify(rplyObj);
+
+    // // test
+    // console.log('Do reply to line,', outType, rplyToken);
+    // console.log('rplyObj,', rplyObj);
+    // return;
+
     var options = setOptions();
     var request = https.request(options, function (response) {
         console.log('Status: ' + response.statusCode);
@@ -152,9 +151,7 @@ function setOptions() {
 
 // 分析輸入字串
 async function parseInput(inputStr) {
-    // var _isNaN = function (obj) {
-    //     return isNaN(parseInt(obj));
-    // }
+    
     try{
         var replyObj = {
             type: 'text',
