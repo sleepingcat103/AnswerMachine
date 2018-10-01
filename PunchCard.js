@@ -60,7 +60,7 @@ exports.TrytoPunchIn = function(p) {
                 console.log('Punch: doPunchIn' + ' - ' + person.Name);
                 var position = setting.Positions[person.Place];
                 
-                if(true){
+                if(onWork){
                     // 抓session key
                     function result1(){
                         return new Promise(function(resolve,reject){
