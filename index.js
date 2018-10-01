@@ -16,15 +16,20 @@ var event = '',
 
 app.set('port', (process.env.PORT || 5000));
 
-app.get('/', async function (req, res) {
-    res.send();
+app.get('/', function (req, res) {
+    res.send('hello');
+});
 
-    setting.Persons.forEach(async function(p){
-        var result = await PunchCard.TrytoPunchIn(p);
-        if(result){
-            replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', result);
-        }
-    });
+app.get('/:punch', async function (req, res) {
+    res.send('punch channel');
+    if(req.params.punch == 'sc'){
+        setting.Persons.forEach(async function(p){
+            var result = await PunchCard.TrytoPunchIn(p);
+            if(result){
+                replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', result);
+            }
+        });
+    }
 });
 
 app.post('/', jsonParser, async function (req, res) {
