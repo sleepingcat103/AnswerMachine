@@ -16,15 +16,21 @@ var event = '',
 
 app.set('port', (process.env.PORT || 5000));
 
-app.get('/', async function (req, res) {
-    res.send();
+app.get('/', function (req, res) {
+    res.send('hello');
+});
 
-    setting.Persons.forEach(async function(p){
-        var result = await PunchCard.TrytoPunchIn(p);
-        if(result){
-            replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', result);
-        }
-    });
+app.get('/:punch', async function (req, res) {
+    res.send('punch channel');
+    if(req.params.punch == 'sc'){
+        setting.Persons.forEach(async function(p){
+            var result = await PunchCard.TrytoPunchIn(p);
+            if(result){
+                console.log('Punch:', result);
+                replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', result);
+            }
+        });
+    }
 });
 
 app.post('/', jsonParser, async function (req, res) {
@@ -65,11 +71,7 @@ app.listen(app.get('port'), function () {
 
 function replyMsgToLine(outType, rplyToken, rplyVal) {
 
-    let rplyObj;
-    
-    // test
-    // console.log('Do reply to line,', outType, rplyToken, rplyVal)
-    // return;
+    var rplyObj, v_path;
 
     // push
     if (outType == 'push') {
@@ -88,13 +90,11 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
         v_path = '/v2/bot/message/reply';
         rplyObj = {
             replyToken: rplyToken,
-            messages: [
-                {
-                    type: "image",
-                    originalContentUrl: rplyVal,
-                    previewImageUrl: rplyVal
-                }
-            ]
+            messages: [{
+                type: "image",
+                originalContentUrl: rplyVal,
+                previewImageUrl: rplyVal
+            }]
         }
     } 
     
@@ -112,16 +112,21 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
         v_path = '/v2/bot/message/reply';
         rplyObj = {
             replyToken: rplyToken,
-            messages: [
-                {
-                  type: "text",
-                  text: rplyVal
-                }
-            ]
+            messages: [{
+                type: "text",
+                text: rplyVal
+            }]
         }
     }
+
     let rplyJson = JSON.stringify(rplyObj);
-    var options = setOptions();
+
+    // // test
+    // console.log('Do reply to line,', outType, rplyToken);
+    // console.log('rplyObj,', rplyObj);
+    // return;
+
+    var options = setOptions(v_path);
     var request = https.request(options, function (response) {
         console.log('Status: ' + response.statusCode);
         //console.log('Headers: ' + JSON.stringify(response.headers));
@@ -136,11 +141,11 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
     request.end(rplyJson);
 }
 
-function setOptions() {
+function setOptions(v_path) {
     var option = {
         host: 'api.line.me',
         port: 443,
-        path: '/v2/bot/message/reply',
+        path: v_path,
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -152,9 +157,7 @@ function setOptions() {
 
 // 分析輸入字串
 async function parseInput(inputStr) {
-    // var _isNaN = function (obj) {
-    //     return isNaN(parseInt(obj));
-    // }
+    
     try{
         var replyObj = {
             type: 'text',
