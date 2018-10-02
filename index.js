@@ -20,6 +20,11 @@ app.get('/', function (req, res) {
     res.send('hello');
 });
 
+//預留的網頁頁面
+app.get('/selling/', function (req, res) {
+    res.send('test');
+});
+
 app.get('/:punch', async function (req, res) {
     res.send('punch channel');
     if(req.params.punch == 'sc'){
