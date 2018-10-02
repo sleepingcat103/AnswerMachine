@@ -21,8 +21,26 @@ app.get('/', function (req, res) {
 });
 
 //預留的網頁頁面
-app.get('/selling/', function (req, res) {
-    res.send('test');
+app.get('/selling/', async function (req, res) {
+    try{
+        var goods = require('./goods.json')
+        var retVal = '';
+        if(goods){
+            for(var _class in goods){
+                retVal += _class + '<br/>';
+                for(var _item in goods[_class]){
+                    retVal += _item + ': ' + goods[_class][_item] + 'NT<br/>';
+                }
+                retVal += '<br/>';
+            }
+        }else{
+            throw '';
+        }
+
+        res.send(retVal);
+    }catch(e){
+        res.send('載入失敗');
+    }
 });
 
 app.get('/:punch', async function (req, res) {
