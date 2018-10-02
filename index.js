@@ -307,7 +307,6 @@ async function parseInput(inputStr) {
     }
 }
 
-
 //貼圖回覆
 function Sticker(package, sticker){
     var msg = {
@@ -317,7 +316,6 @@ function Sticker(package, sticker){
     };
     return msg;
 }
-
 
 /// Others
 
@@ -337,8 +335,6 @@ function Sticker(package, sticker){
 //     return (nd.getMonth()+1)+'-'+nd.getDate();
 // }
 
-
-
 //對應關鍵字
 function IsKeyWord(target, strs){
     if(target==null||strs==null){
@@ -355,8 +351,6 @@ function IsKeyWord(target, strs){
     }
     return false;
 }
-
-
 
 function MeowHelp() {
     return randomReturn.text.meow.getRandom() + '\n要做什麼喵?\n\n(輸入 !help 以獲得使用說明)';
