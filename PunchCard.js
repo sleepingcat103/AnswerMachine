@@ -156,7 +156,7 @@ exports.TrytoPunchIn = function(p) {
                                         var data = parser.xml2json(body);
                                         resolve({
                                             IsSuccess: true,
-                                            msg: person.Name + ' -> ' + data.FunctionExecResult.ReturnMessage
+                                            msg: person.Name + '(' + person.Place + ') -> ' + data.FunctionExecResult.ReturnMessage
                                         });
                                     }catch(e){
                                         console.log('打卡失敗(打卡)->', person.Name, e.toString());

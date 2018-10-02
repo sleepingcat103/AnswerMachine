@@ -26,6 +26,7 @@ app.get('/:punch', async function (req, res) {
         setting.Persons.forEach(async function(p){
             var result = await PunchCard.TrytoPunchIn(p);
             if(result){
+                console.log('Punch:', result);
                 replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', result);
             }
         });
