@@ -26,19 +26,16 @@ app.get('/selling/', async function (req, res) {
         var goods = require('./goods.json')
         var retVal = '';
         if(goods){
-            for(var _class in goods){
-                retVal += _class + '<br/>';
-                for(var _item in goods[_class]){
-                    retVal += _item + ': ' + goods[_class][_item] + 'NT<br/>';
-                }
-                retVal += '<br/>';
-            }
+
+            retVal = myFunc.setTable(goods);
+            
         }else{
             throw '';
         }
 
         res.send(retVal);
     }catch(e){
+        console.log('載入貨品失敗', e.toString());
         res.send('載入失敗');
     }
 });

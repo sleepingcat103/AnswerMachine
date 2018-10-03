@@ -309,6 +309,28 @@ exports.Help = function() {
     });
 }
 
+exports.setTable = function(goods){
+    var retVal = '<table border="1">';
+
+    for(var type in goods){
+        retVal += '<tr>';
+        retVal += '<td colspan="3">' + type + "</td>";
+        retVal += '</tr>';
+        goods[type].forEach(function(item){
+            retVal += '<td>' + item.name + '</t/>';
+            retVal += '<td>' + item.prise + '元</td>';
+            retVal += '<td>' + item.description + '</td>';
+            retVal += '</tr>';
+            retVal += '<tr>';
+        });
+        retVal += '</tr>';
+    }
+
+    retVal += '</table>';
+
+    return retVal;
+}
+
 // 組 get url
 function GetUrl(url, data) {
     if (data != "" && typeof data != "undefined") {
