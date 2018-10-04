@@ -11,7 +11,7 @@ var randomReturn = require('./RandomReturn.json'),
     goods = require('./goods.json');
 
 var ChannelAccessKey = 'actVI2pGSgmQ+JYuF2il02qMYH+1+3Q6pvaTjjL4J77uWSuVRoTZnloLqZG39jxfuZAWyS77LfHuQ9rHx4vupzxq3sDLKcwRraRq0F0t9B8aULHlhuO2BYmiIvOFjT6Vs+RFkd3GDQnNB2Ykvo6rlgdB04t89/1O/w1cDnyilFU=',
-    controllerChannel = '7f744fbf29a046ccbd4b58b6eb0ef377';
+    controllerChannel = 'Cc95c551988b0c687621be2294a5599a8';
 
 var event = '',
     meowSwitch = false;
@@ -190,8 +190,8 @@ async function parseInput(inputStr, replyToken) {
         //指定啟動詞在第一個詞，轉小寫方便辨識
         let trigger = mainMsg[0].toString().toLowerCase(); 
 
-	//console.log(replyToken, controllerChannel)
-    	//console.log('Channel:', (replyToken == controllerChannel)?'Controller Channel' : 'General Users');
+	console.log(replyToken, controllerChannel)
+    	console.log('Channel:', (replyToken == controllerChannel)?'Controller Channel' : 'General Users');
         // 開發人員頻道
         if(replyToken == controllerChannel){
 	    //console.log('goods',(goods)? 'exist' : 'no exist');
