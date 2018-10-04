@@ -60,6 +60,7 @@ app.post('/', jsonParser, async function (req, res) {
         
         var replyToken = event.replyToken;
         var replyObj = null;
+        var groupId = event.hasOwnProperty('source') ? event.source.groupId : '';
         
         //初次加入給使用說明訊息
         if (type == 'join' || type == 'follow'){
@@ -73,7 +74,7 @@ app.post('/', jsonParser, async function (req, res) {
         //目前僅針對文字訊息回覆
         }else if (type == 'message' && event.message.type == 'text') {
             console.log('InputStr:', event.message.text);
-            replyObj = await parseInput(event.message.text, replyToken);
+            replyObj = await parseInput(event.message.text, groupId);
             if(replyObj.msg){
                 replyMsgToLine(replyObj.type, replyToken, replyObj.msg);
             }
