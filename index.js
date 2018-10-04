@@ -364,6 +364,10 @@ async function parseInput(inputStr, replyToken) {
         else if (trigger.match(/喵|貓/) != null && meowSwitch) {
             replyObj.msg = randomReturn.text.meow.getRandom();
         }
+
+        else if (trigger == test){
+            replyObj.msg = await myFunc.test();
+        }
         
         return replyObj;
 

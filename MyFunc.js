@@ -1,6 +1,7 @@
 var cheerio = require("cheerio"),
     fs = require('fs'),
-    rp = require('request-promise');
+    rp = require('request-promise'),
+    request = require('request'),
     imgur = require('imgur');
 
 var randomReturn = require('./RandomReturn.json'),
@@ -261,6 +262,42 @@ exports.Luck = function(str) {
                 IsSuccess: false,
                 msg: 'Neta error": ' + e.toString()
             });
+        }
+    });
+}
+
+exports.test = function(){
+    return new Promise(function(resolve, reject){
+        try{
+            var request = https.request({
+                host: 'api.line.me',
+                port: 443,
+                path: '/liff/v1/apps',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + ChannelAccessKey
+                },
+                body: {
+                    'view': {
+                        "type": "full",
+                        "url": "https://catmeowmeow.herokuapp.com/selling"
+                    }
+                }
+            }, function (response) {
+                console.log('Status: ' + response.statusCode);
+                //console.log('Headers: ' + JSON.stringify(response.headers));
+                response.setEncoding('utf8');
+                response.on('data', function (body) {
+                    console.log('body:', body);
+                });
+            });
+            // request.on('error', function (e) {
+            //     console.log('Request error:', e.message);
+            // })
+            // request.end(rplyJson);
+        }catch(e){
+
         }
     });
 }
