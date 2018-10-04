@@ -190,8 +190,11 @@ async function parseInput(inputStr, replyToken) {
         //指定啟動詞在第一個詞，轉小寫方便辨識
         let trigger = mainMsg[0].toString().toLowerCase(); 
 
+	console.log(replyToken, controllerChannel)
+    	console.log('Channel:', (replyToken == controllerChannel)?'Controller Channel' : 'General Users');
         // 開發人員頻道
         if(replyToken == controllerChannel){
+	    console.log('goods',(goods)? 'exist' : 'no exist');
             if(goods && IsKeyWord(trigger, ['new', 'add', '新增']) && goods.hasOwnProperty(mainMsg[1]) && mainMsg.length == 5){
                 goods = myFunc.addGoods(goods, mainMsg);
                 replyObj.msg = (goods) ? 'Success' : 'Fail';
