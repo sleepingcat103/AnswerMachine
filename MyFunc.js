@@ -309,26 +309,133 @@ exports.Help = function() {
     });
 }
 
+// 網頁相關功能
+
+//產資料table
 exports.setTable = function(goods){
-    var retVal = '<table border="1">';
-
-    for(var type in goods){
-        retVal += '<tr>';
-        retVal += '<td colspan="3">' + type + "</td>";
-        retVal += '</tr>';
-        goods[type].forEach(function(item){
-            retVal += '<td>' + item.name + '</t/>';
-            retVal += '<td>' + item.prise + '元</td>';
-            retVal += '<td>' + item.description + '</td>';
-            retVal += '</tr>';
-            retVal += '<tr>';
-        });
-        retVal += '</tr>';
+    try{
+        return myHtml('table', {"border": "1"}, 
+            myHtml('tr', null, [
+                myHtml('th', null, '名稱'),
+                myHtml('th', null, '價格'),
+                myHtml('th', null, '狀態'),
+                myHtml('th', null, '描述'),
+                myHtml('th', null, '賣家最後更新時間')
+            ]) +
+            Object.keys(goods).map(function(type){
+                return myHtml('tr', null, [
+                    myHtml('td', {"colspan": "5"}, type)
+                ]) + 
+                ((goods[type].length == 0) 
+                ? myHtml('tr', null, [
+                    myHtml('td', {"colspan": "5"}, '暫無商品')
+                ])
+                : goods[type].map(function(item){
+                    return myHtml('tr', null, [
+                        myHtml('td', null, item.name),
+                        myHtml('td', {"align": "right"}, item.prise + ' 元'),
+                        myHtml('td', {"align": "right"}, item.status),
+                        myHtml('td', null, item.description),
+                        myHtml('td', {"align": "right"}, item.update)
+                    ]);
+                }).join(''))
+            }).join('') + 
+            myHtml('tr', null, 
+                myHtml('td', {"colspan": "5"}, 'Line ID: sleeepingcat</br>加入line以優先保留您需要的商品並得到即時的回覆')
+            )
+        );
+    }catch(e){
+        return '';
     }
+}
 
-    retVal += '</table>';
+//產html
+function myHtml(tag, attribute, inner){
+    if(!tag) return '';
+    try{
+        var retVal = '<' + tag;
+        
+        for(var attr in attribute){
+            retVal += ' ' + attr + '="' + attribute[attr] + '"';
+        }
+        
+        retVal += '>';
 
-    return retVal;
+        retVal += typeof(inner) == 'object' ? inner.join('') : 
+            inner == undefined ? '' : inner;
+
+        retVal += '</' + tag + '>';
+
+        return retVal;
+    }catch(e){
+        console.log('geneerate Html error: ' + e.toString());
+        return '';
+    }
+}
+
+exports.writeFile = function(file, data){
+    return new Promise(function(resolve, reject){
+        try{
+            fs.writeFile(file, JSON.stringify(data), function(err){
+                if(err)
+                    throw err;
+                else
+                    resolve(true);
+            });
+        }catch(e){
+            console.log('writeFile error-> ' + e.toString());
+            resolve(false);
+        }
+    });
+}
+
+// 修改資料
+// 編輯 書籍 舊書 prise 30
+exports.editGoods = function(goods, mainMsg){
+    try{
+        goods[mainMsg[1]] = goods[mainMsg[1]].map(function(item){
+            if(item.name == mainMsg[2]){
+                item[mainMsg[3]] = mainMsg[4];
+                item.update = new Date().toLocaleString('zh-TW');
+            }
+
+            return item;
+        });
+        return goods;
+    }catch(e){
+        console.log(e);
+        return;
+    }
+}
+
+//心增 書籍 新書 500 desc
+exports.addGoods = function(goods, mainMsg){
+    try{
+        goods[mainMsg[1]].push({
+            "name": mainMsg[2],
+            "prise": mainMsg[3],
+            "status": "上架中",
+            "description": mainMsg[4],
+            "update": new Date().toLocaleString('zh-TW')
+        });
+        return goods;
+    }catch(e){
+        console.log(e);
+        return;
+    }
+}
+
+// 刪除 書籍 XX
+exports.deleteGoods = function(goods, mainMsg){
+    try{
+        goods[mainMsg[1]] = goods[mainMsg[1]].filter(function(item){
+            return !(item.name == mainMsg[2]);
+        });
+        return goods;
+    }catch(e){
+        console.log(e);
+        return;
+    }
 }
 
 // 組 get url

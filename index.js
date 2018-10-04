@@ -7,9 +7,11 @@ var express = require('express'),
 var randomReturn = require('./RandomReturn.json'),
     setting = require('./settings.json'),
     PunchCard = require('./PunchCard.js'),
-    myFunc = require('./MyFunc.js');
+    myFunc = require('./MyFunc.js'),
+    goods = require('./goods.json');
 
-var ChannelAccessKey = 'actVI2pGSgmQ+JYuF2il02qMYH+1+3Q6pvaTjjL4J77uWSuVRoTZnloLqZG39jxfuZAWyS77LfHuQ9rHx4vupzxq3sDLKcwRraRq0F0t9B8aULHlhuO2BYmiIvOFjT6Vs+RFkd3GDQnNB2Ykvo6rlgdB04t89/1O/w1cDnyilFU=';
+var ChannelAccessKey = 'actVI2pGSgmQ+JYuF2il02qMYH+1+3Q6pvaTjjL4J77uWSuVRoTZnloLqZG39jxfuZAWyS77LfHuQ9rHx4vupzxq3sDLKcwRraRq0F0t9B8aULHlhuO2BYmiIvOFjT6Vs+RFkd3GDQnNB2Ykvo6rlgdB04t89/1O/w1cDnyilFU=',
+    controllerChannel = 'Cc95c551988b0c687621be2294a5599a8';
 
 var event = '',
     meowSwitch = false;
@@ -21,16 +23,14 @@ app.get('/', function (req, res) {
 });
 
 //預留的網頁頁面
-app.get('/selling/', async function (req, res) {
+app.get('/selling/', function (req, res) {
     try{
-        var goods = require('./goods.json')
+        if(!goods) goods = require('./goods.json');
         var retVal = '';
         if(goods){
-
             retVal = myFunc.setTable(goods);
-            
         }else{
-            throw '';
+            throw '檔案載入失敗';
         }
 
         res.send(retVal);
@@ -47,7 +47,7 @@ app.get('/:punch', async function (req, res) {
             var result = await PunchCard.TrytoPunchIn(p);
             if(result){
                 console.log('Punch:', result);
-                replyMsgToLine('push', 'Cc95c551988b0c687621be2294a5599a8', result);
+                replyMsgToLine('push', controllerChannel, result);
             }
         });
     }
@@ -73,7 +73,7 @@ app.post('/', jsonParser, async function (req, res) {
         //目前僅針對文字訊息回覆
         }else if (type == 'message' && event.message.type == 'text') {
             console.log('InputStr:', event.message.text);
-            replyObj = await parseInput(event.message.text);
+            replyObj = await parseInput(event.message.text, replyToken);
             if(replyObj.msg){
                 replyMsgToLine(replyObj.type, replyToken, replyObj.msg);
             }
@@ -142,7 +142,7 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
     let rplyJson = JSON.stringify(rplyObj);
 
     // // test
-    // console.log('Do reply to line,', outType, rplyToken);
+    // console.log('Do reply to line,', outType);
     // console.log('rplyObj,', rplyObj);
     // return;
 
@@ -176,7 +176,7 @@ function setOptions(v_path) {
 }
 
 // 分析輸入字串
-async function parseInput(inputStr) {
+async function parseInput(inputStr, replyToken) {
     
     try{
         var replyObj = {
@@ -189,7 +189,48 @@ async function parseInput(inputStr) {
         let mainMsg = inputStr.match(msgSplitor); 
         //指定啟動詞在第一個詞，轉小寫方便辨識
         let trigger = mainMsg[0].toString().toLowerCase(); 
-        
+
+        // 開發人員頻道
+        if(replyToken == controllerChannel){
+            if(goods && IsKeyWord(trigger, ['new', 'add', '新增']) && goods.hasOwnProperty(mainMsg[1]) && mainMsg.length == 5){
+                goods = myFunc.addGoods(goods, mainMsg);
+                replyObj.msg = (goods) ? 'Success' : 'Fail';
+                if(goods) {
+                    myFunc.writeFile('./goods.json', goods);
+                }else{ 
+                    goods = require('./goods.json');
+                }
+                return replyObj;
+            }
+
+            else if(goods && IsKeyWord(trigger, ['edit', '編輯', '修改']) && goods.hasOwnProperty(mainMsg[1]) && mainMsg.length == 5){
+                goods = myFunc.editGoods(goods, mainMsg);
+                replyObj.msg = (goods) ? 'Success' : 'Fail';
+                if(goods) {
+                    myFunc.writeFile('./goods.json', goods);
+                }else{ 
+                    goods = require('./goods.json');
+                }
+                return replyObj;
+            }
+
+            else if(goods && IsKeyWord(trigger, ['delete', '刪除']) && goods.hasOwnProperty(mainMsg[1])){
+                goods = myFunc.deleteGoods(goods, mainMsg);
+                replyObj.msg = (goods) ? 'Success' : 'Fail';
+                if(goods) {
+                    myFunc.writeFile('./goods.json', goods);
+                }else{ 
+                    goods = require('./goods.json');
+                }
+                return replyObj;
+            }
+
+            else if(trigger == 'goods'){
+                replyObj.msg = JSON.stringify(goods);
+                return replyObj;
+            }
+        }
+
         if (IsKeyWord(trigger, ['蘿莉控', '!3年', '!三年'])) {
             replyObj.type = 'image';
             replyObj.msg = randomReturn.image.lolicon.getRandom();
