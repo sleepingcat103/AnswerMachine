@@ -13,7 +13,6 @@ exports = module.exports = {};
 // 梗圖嵌字 
 // 待更新: 調整字體&位置的演算法
 exports.Neta = function(text){
-
     return new Promise(function(resolve, reject){
         try{
             var Canvas = require('canvas'),
@@ -43,11 +42,13 @@ exports.Neta = function(text){
 
                 //ctx.rotate(10*Math.PI/180);
 
-                fs.writeFileSync("test.jpg", canvas.toBuffer());
+                console.log('canvas.toBuffer()', canvas.toBuffer());
+
+                fs.writeFileSync("neta.jpg", canvas.toBuffer());
 
                 imgur.setClientId('59891e0427c16b3');
 
-                imgur.uploadFile( __dirname + '/test.jpg')
+                imgur.uploadFile( __dirname + '/neta.jpg')
                 .then(function (json) {
                     resolve({
                         IsSuccess: true,
@@ -62,6 +63,34 @@ exports.Neta = function(text){
             resolve({
                 IsSuccess: false,
                 msg: 'Neta error": ' + e.toString()
+            });
+        }
+    });
+}
+
+exports.GetImgUrl = function(image){
+
+    return new Promise(function(resolve, reject){
+        try{            
+            console.log('image',image);
+            fs.writeFileSync("image.jpg", image);
+
+            imgur.setClientId('59891e0427c16b3');
+
+            imgur.uploadFile( __dirname + '/image.jpg')
+            .then(function (json) {
+                resolve({
+                    IsSuccess: true,
+                    msg: json.data.link
+                });
+            })
+            .catch(function (error) {
+                throw error.message;
+            });
+        }catch(e){
+            resolve({
+                IsSuccess: false,
+                msg: 'GetImgUrl error": ' + e.toString()
             });
         }
     });
@@ -96,7 +125,7 @@ exports.JP = function() {
         }catch(e){
             resolve({
                 IsSuccess: false,
-                msg: 'Neta error": ' + e.toString()
+                msg: 'JP error": ' + e.toString()
             });
         }
     });
@@ -131,7 +160,7 @@ exports.googleSearch = function(str){
         }catch(e){
             resolve({
                 IsSuccess: false,
-                msg: 'Neta error": ' + e.toString()
+                msg: 'googleSearch error": ' + e.toString()
             });
         }
     })
@@ -160,7 +189,7 @@ exports.shortenUrl = function(url){
         }catch(e){
             resolve({
                 IsSuccess: false,
-                msg: 'Neta error": ' + e.toString()
+                msg: 'shortenUrl error": ' + e.toString()
             });
         }
     })
@@ -201,7 +230,7 @@ exports.TWticket = function() {
         }catch(e){
             resolve({
                 IsSuccess: false,
-                msg: 'Neta error": ' + e.toString()
+                msg: 'TWticket error": ' + e.toString()
             });
         }
     });
@@ -260,48 +289,11 @@ exports.Luck = function(str) {
         }catch(e){
             resolve({
                 IsSuccess: false,
-                msg: 'Neta error": ' + e.toString()
+                msg: 'Luck error": ' + e.toString()
             });
         }
     });
 }
-
-exports.test = function(){
-    return new Promise(function(resolve, reject){
-        try{
-            var request = https.request({
-                host: 'api.line.me',
-                port: 443,
-                path: '/liff/v1/apps',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + ChannelAccessKey
-                },
-                body: {
-                    'view': {
-                        "type": "full",
-                        "url": "https://catmeowmeow.herokuapp.com/selling"
-                    }
-                }
-            }, function (response) {
-                console.log('Status: ' + response.statusCode);
-                //console.log('Headers: ' + JSON.stringify(response.headers));
-                response.setEncoding('utf8');
-                response.on('data', function (body) {
-                    console.log('body:', body);
-                });
-            });
-            // request.on('error', function (e) {
-            //     console.log('Request error:', e.message);
-            // })
-            // request.end(rplyJson);
-        }catch(e){
-
-        }
-    });
-}
-
 //// request functions end ////
 
 

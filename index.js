@@ -86,6 +86,21 @@ app.post('/', jsonParser, async function (req, res) {
     }
 });
 
+app.post('/image/', jsonParser, async function (req, res) {
+    try{
+        console.log(req.body.image);
+        var result = await myFunc.GetImgUrl(req.body.image);
+        if(result.IsSuccess){
+            res.send(result.msg);
+        }else{
+            console.log(result.msg)
+            res.send();
+        }
+    }catch(e){
+        console.log('post error:', e.toString());
+    }
+});
+
 app.listen(app.get('port'), function () {
     console.log('Node app is running on port', app.get('port'));
 });
@@ -142,7 +157,7 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
 
     let rplyJson = JSON.stringify(rplyObj);
 
-    // // test
+    // test
     // console.log('Do reply to line,', outType);
     // console.log('rplyObj,', rplyObj);
     // return;
@@ -191,9 +206,7 @@ async function parseInput(inputStr, replyToken) {
         //指定啟動詞在第一個詞，轉小寫方便辨識
         let trigger = mainMsg[0].toString().toLowerCase(); 
 
-	console.log(replyToken, controllerChannel)
-    	console.log('Channel:', (replyToken == controllerChannel)?'Controller Channel' : 'General Users');
-        // 開發人員頻道
+	    // 開發人員頻道
         if(replyToken == controllerChannel){
 	    //console.log('goods',(goods)? 'exist' : 'no exist');
             if(goods && IsKeyWord(trigger, ['new', 'add', '新增']) && goods.hasOwnProperty(mainMsg[1]) && mainMsg.length == 5){
@@ -365,9 +378,9 @@ async function parseInput(inputStr, replyToken) {
             replyObj.msg = randomReturn.text.meow.getRandom();
         }
 
-        else if (trigger == test){
-            replyObj.msg = await myFunc.test();
-        }
+        // else if (trigger == test){
+        //     replyObj.msg = await myFunc.test();
+        // }
         
         return replyObj;
 
