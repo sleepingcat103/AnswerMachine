@@ -88,7 +88,7 @@ app.post('/', jsonParser, async function (req, res) {
 
 app.post('/image/', jsonParser, async function (req, res) {
     try{
-        console.log(req.body.image);
+        console.log(req.body);
         var result = await myFunc.GetImgUrl(req.body.image);
         if(result.IsSuccess){
             res.send(result.msg);
