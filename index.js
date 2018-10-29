@@ -70,7 +70,7 @@ app.listen(app.get('port'), function () {
 
 function replyMsgToLine(outType, rplyToken, rplyVal) {
 
-    var rplyObj, v_path;
+    let rplyObj;
 
     // push
     if (outType == 'push') {
@@ -125,7 +125,7 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
     // console.log('rplyObj,', rplyObj);
     // return;
 
-    var options = setOptions(v_path);
+    var options = setOptions();
     var request = https.request(options, function (response) {
         console.log('Status: ' + response.statusCode);
         //console.log('Headers: ' + JSON.stringify(response.headers));
@@ -140,11 +140,11 @@ function replyMsgToLine(outType, rplyToken, rplyVal) {
     request.end(rplyJson);
 }
 
-function setOptions(v_path) {
+function setOptions() {
     var option = {
         host: 'api.line.me',
         port: 443,
-        path: v_path,
+        path: '/v2/bot/message/reply',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
