@@ -21,9 +21,9 @@ app.get('/', function (req, res) {
 });
 
 //預留的網頁頁面
-app.get('/selling/', function (req, res) {
-    res.send('test');
-});
+// app.get('/selling/', function (req, res) {
+//     res.send('test');
+// });
 
 app.get('/:punch', async function (req, res) {
     res.send('punch channel');
@@ -36,6 +36,13 @@ app.get('/:punch', async function (req, res) {
             }
         });
     }
+    // ,
+    // {
+    //     "Name": "Avery",
+    //     "Account": "10509002",
+    //     "Password": "10509002",
+    //     "Place": "NHI"
+    // }
 });
 
 app.post('/', jsonParser, async function (req, res) {

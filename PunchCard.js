@@ -6,8 +6,6 @@ var setting = require('./settings.json'),
 exports.TrytoPunchIn = function(p) {
     return new Promise(function(resolve, reject){
         try{
-            var needPunchedIn = true;
-
             var d, utc, today, date, hour, day;
 
             var card = {
@@ -33,25 +31,18 @@ exports.TrytoPunchIn = function(p) {
             };
 
             function doValidate(){
-                needPunchedIn = function(){
-                    if(setting.Dates.ReturnDays.includes(date)){
-                        return true;
-                    }
-                    else if(day == 6 || day == 0){
-                        return false;
-                    }
-                    else if(setting.Dates.Holidays.includes(date)){
-                        return false;
-                    }else{
-                        return true;
-                    }
-                };
-                if(needPunchedIn()){
-                    if(hour == 8||hour == 18){
-                        return true;
-                    }else{
-                        return false;
-                    }
+                if(setting.Dates.ReturnDays.includes(date)){
+                    return true;
+                }
+                else if(day == 6 || day == 0){
+                    return false;
+                }
+                else if(setting.Dates.Holidays.includes(date)){
+                    return false;
+                }else if((hour == 8 && minute >= 30) || (hour == 18 && minute <= 30)){
+                    return true; //=====>>>PUNCH IN
+                }else{
+                    return true;
                 }
             }
 

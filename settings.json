@@ -1,7 +1,7 @@
 {
     "Persons": [
         {
-            "Name": "方翊宸",
+            "Name": "貓",
             "Account": "10506006",
             "Password": "gs15031240",
             "Place": "MGB"
@@ -12,7 +12,6 @@
             "2018/9/24",  
             "2018/10/10",
             "2018/10/18",
-            "2018/10/19",
             "2018/12/31", 
             "2019/1/1"    
         ],
@@ -20,6 +19,7 @@
     },
     "Positions": {
         "BOT": {
+            "pos": "台銀(民權西路站)",
             "lat_base": "25.06",
             "long_base": "121.5",
             "lat_offset": 11000,
@@ -28,12 +28,22 @@
             "long_more": 170000
         },
         "MGB": {
-            "lat_base": "25.0",
+            "pos": "兆豐(松山站)",
+            "lat_base": "25.05",
             "long_base": "121.5",
             "lat_offset": 11000,
             "long_offset": 30000,
-            "lat_more": 500000,
+            "lat_more": 0,
             "long_more": 800000
+        },
+        "NHI": {
+            "pos": "衛生福利部中央健康保險署",
+            "lat_base": "25.03",
+            "long_base": "121.5",
+            "lat_offset": 11000,
+            "long_offset": 30000,
+            "lat_more": 25500,
+            "long_more": 385000
         }
     }
 }
