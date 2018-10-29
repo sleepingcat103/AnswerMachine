@@ -23,26 +23,26 @@ app.get('/', function (req, res) {
 });
 
 //預留的網頁頁面
-app.get('/selling/', function (req, res) {
-    try{
-        if(!goods) goods = require('./goods.json');
-        var retVal = '';
-        if(goods){
-            retVal = myFunc.setTable(goods);
-        }else{
-            throw '檔案載入失敗';
-        }
+// app.get('/selling/', function (req, res) {
+//     try{
+//         if(!goods) goods = require('./goods.json');
+//         var retVal = '';
+//         if(goods){
+//             retVal = myFunc.setTable(goods);
+//         }else{
+//             throw '檔案載入失敗';
+//         }
 
-        res.send(retVal);
-    }catch(e){
-        console.log('載入貨品失敗', e.toString());
-        res.send('載入失敗');
-    }
-});
+//         res.send(retVal);
+//     }catch(e){
+//         console.log('載入貨品失敗', e.toString());
+//         res.send('載入失敗');
+//     }
+// });
 
 app.get('/:punch', async function (req, res) {
     res.send('punch channel');
-    if(req.params.punch == 'sc'){
+    if(req.params.punch == 'sc' && false){
         setting.Persons.forEach(async function(p){
             var result = await PunchCard.TrytoPunchIn(p);
             if(result){
